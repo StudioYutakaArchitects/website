@@ -5,974 +5,1032 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Studio Yutaka Architects</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+JP:wght@300;400&family=Space+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0C0C0C;
-    --white: #F5F2EE;
-    --sand: #C4B49A;
-    --gray: #8A8680;
-    --light: #E8E3DC;
-    --accent: #8B6F4E;
-    --rule: 1px solid rgba(12,12,12,0.15);
-  }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black:  #0A0A0A;
+  --white:  #FFFFFF;
+  --off:    #F6F5F3;
+  --light:  #EBEBEA;
+  --gray:   #999;
+  --mid:    #555;
+  --border: #E0DEDA;
+  --green:  #8BBF4E;   /* ← 黄緑 — ここで色を調整 */
+  --mono:   'DM Mono', monospace;
+  --en:     'Inter', sans-serif;
+  --jp:     'Noto Sans JP', sans-serif;
+}
 
-  html { scroll-behavior: smooth; font-size: 16px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--white);
+  color:var(--black);
+  font-family:var(--jp);
+  font-weight:300;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+::selection{background:var(--black);color:var(--white);}
+img{display:block;width:100%;height:100%;object-fit:cover;}
 
-  body {
-    background: var(--white);
-    color: var(--black);
-    font-family: 'Cormorant Garamond', 'Noto Sans JP', serif;
-    font-weight: 300;
-    line-height: 1.7;
-    cursor: default;
-    overflow-x: hidden;
-  }
+/* ── PHOTO PLACEHOLDER ── */
+.ph{
+  background:var(--light);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:8px;color:#bbb;
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:0.1em;text-align:center;padding:16px;
+  border:none;
+}
+.ph::before{
+  content:'';display:block;width:22px;height:22px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ccc' stroke-width='1.2'%3E%3Crect x='3' y='3' width='18' height='18' rx='1'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='M21 15l-5-5L5 21'/%3E%3C/svg%3E") center/20px no-repeat;
+}
 
-  ::selection { background: var(--black); color: var(--white); }
+/* ══════════════════════════════
+   NAV
+══════════════════════════════ */
+nav{
+  position:fixed;inset:0 0 auto 0;
+  z-index:200;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;
+  background:rgba(255,255,255,0.96);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
 
-  /* ── CUSTOM CURSOR ── */
-  .cursor {
-    width: 8px; height: 8px;
-    background: var(--black);
-    border-radius: 50%;
-    position: fixed;
-    top: 0; left: 0;
-    pointer-events: none;
-    z-index: 9999;
-    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
-    transform: translate(-50%, -50%);
-  }
-  .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid var(--black); }
+/* ロゴ: STUDIO & ARCHITECTS = 黄緑太字, YUTAKA = 細い黒（目立たない） */
+.nav-logo{
+  text-decoration:none;
+  display:flex;align-items:baseline;
+  font-family:var(--mono);
+  font-size:14px;letter-spacing:0.08em;text-transform:uppercase;line-height:1;
+}
+.logo-studio{
+  color:var(--green);   /* 黄緑 */
+  font-weight:700;      /* 太字 */
+}
+.logo-yutaka{
+  color:var(--gray);          /* グレー */
+  font-weight:700;            /* STUDIOと同じ太さ */
+  letter-spacing:0.08em;
+  padding:0 0.25em;
+  font-size:1em;              /* STUDIOと同じサイズ */
+}
+.logo-arch{
+  color:var(--green);   /* 黄緑 */
+  font-weight:700;      /* 太字 */
+}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 48px;
-    background: rgba(245,242,238,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: var(--rule);
-    transition: padding 0.3s;
-  }
-  .nav-logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--black);
-    text-decoration: none;
-  }
-  .nav-links {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-  }
-  .nav-links a {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.15em;
-    text-decoration: none;
-    color: var(--gray);
-    text-transform: uppercase;
-    transition: color 0.2s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px; left: 0;
-    width: 0; height: 1px;
-    background: var(--black);
-    transition: width 0.3s ease;
-  }
-  .nav-links a:hover { color: var(--black); }
-  .nav-links a:hover::after { width: 100%; }
+.nav-right{display:flex;align-items:center;gap:28px;}
+.nav-link{
+  font-family:var(--jp);font-size:12px;
+  color:var(--gray);text-decoration:none;
+  transition:color 0.15s;
+}
+.nav-link:hover{color:var(--black);}
 
-  /* ── HERO ── */
-  #hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-top: 80px;
-  }
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 80px 48px 80px 48px;
-    border-right: var(--rule);
-  }
-  .hero-tag {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    color: var(--sand);
-    text-transform: uppercase;
-    margin-bottom: 32px;
-  }
-  .hero-title {
-    font-size: clamp(48px, 6vw, 96px);
-    font-weight: 300;
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-    margin-bottom: 48px;
-  }
-  .hero-title em {
-    font-style: italic;
-    color: var(--accent);
-  }
-  .hero-sub {
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 13px;
-    color: var(--gray);
-    line-height: 1.9;
-    max-width: 360px;
-    margin-bottom: 48px;
-  }
-  .hero-scroll {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--sand);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .hero-scroll::before {
-    content: '';
-    display: block;
-    width: 40px; height: 1px;
-    background: var(--sand);
-  }
-  .hero-right {
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-right img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    filter: grayscale(20%);
-    transition: transform 8s ease;
-  }
-  .hero-right:hover img { transform: scale(1.03); }
-  .hero-year {
-    position: absolute;
-    bottom: 32px; right: 32px;
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    color: rgba(245,242,238,0.6);
-    letter-spacing: 0.2em;
-  }
+/* ══════════════════════════════
+   MODAL
+══════════════════════════════ */
+.modal-bg{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.9);
+  z-index:300;
+  display:none;align-items:center;justify-content:center;padding:40px;
+}
+.modal-bg.open{display:flex;}
+.modal-box{
+  background:var(--white);max-width:960px;width:100%;
+  max-height:88vh;overflow-y:auto;
+  display:grid;grid-template-columns:1fr 1fr;
+}
+.modal-img-area{background:var(--light);}
+.modal-img-area .ph{height:100%;min-height:360px;}
+.modal-body{padding:40px 36px;display:flex;flex-direction:column;gap:14px;}
+.modal-type{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;color:var(--gray);}
+.m-name-jp{font-family:var(--jp);font-size:22px;font-weight:400;line-height:1.25;margin-bottom:1px;}
+.m-name-en{font-family:var(--en);font-size:13px;color:var(--gray);font-weight:300;}
+.modal-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.modal-meta label{font-family:var(--mono);font-size:9px;color:var(--gray);display:block;margin-bottom:2px;letter-spacing:0.1em;}
+.modal-meta span{font-size:12px;}
+.m-desc-jp{font-family:var(--jp);font-size:13px;line-height:2.1;color:var(--mid);}
+.m-desc-en{font-family:var(--en);font-size:12px;line-height:1.9;color:var(--gray);}
+.modal-x{
+  position:fixed;top:24px;right:32px;color:#fff;background:none;
+  border:1px solid rgba(255,255,255,0.2);
+  width:36px;height:36px;cursor:pointer;font-size:14px;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-x:hover{background:rgba(255,255,255,0.1);}
 
-  /* ── SECTIONS ── */
-  section { border-top: var(--rule); }
+/* ══════════════════════════════
+   REVEAL
+══════════════════════════════ */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.in{opacity:1;transform:none;}
 
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.25em;
-    color: var(--sand);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-label::before {
-    content: attr(data-num);
-    opacity: 0.4;
-  }
+/* ══════════════════════════════
+   SECTION SHELL
+══════════════════════════════ */
+.sec{padding:88px 32px;}
+.sec.toned{background:var(--off);}
+.sec.dark{background:var(--black);color:var(--white);}
 
-  .section-heading {
-    font-size: clamp(32px, 4vw, 56px);
-    font-weight: 300;
-    letter-spacing: -0.01em;
-    line-height: 1.1;
-    margin-bottom: 64px;
-  }
+.sec-head{margin-bottom:56px;}
+.sec-num{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;color:var(--gray);margin-bottom:8px;}
+.sec-title-en{font-size:clamp(26px,4vw,48px);font-weight:300;letter-spacing:-0.01em;line-height:1.05;margin-bottom:4px;font-family:var(--en);}
+.sec-title-jp{font-family:var(--jp);font-size:12px;color:var(--gray);font-weight:300;letter-spacing:0.04em;}
+.dark .sec-num,.dark .sec-title-jp{color:rgba(255,255,255,0.35);}
+.dark .sec-title-en{color:var(--white);}
 
-  /* ── PROJECTS ── */
-  #projects { padding: 120px 48px; }
+.sec-lead{max-width:600px;margin-top:24px;}
+.sec-lead-jp{font-family:var(--jp);font-size:13px;line-height:2.1;color:var(--mid);}
+.sec-lead-en{font-family:var(--en);font-size:11px;color:var(--gray);line-height:1.8;margin-top:4px;}
+.dark .sec-lead-jp{color:rgba(255,255,255,0.6);}
+.dark .sec-lead-en{color:rgba(255,255,255,0.3);}
 
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 2px;
-  }
+/* ══════════════════════════════
+   01 WORKS — 縦一列・大きく
+══════════════════════════════ */
+#works{padding-top:56px;} /* nav offset */
 
-  .project-card {
-    position: relative;
-    overflow: hidden;
-    background: var(--light);
-    cursor: pointer;
-  }
-  .project-card:nth-child(1) { grid-column: span 8; grid-row: span 2; }
-  .project-card:nth-child(2) { grid-column: span 4; }
-  .project-card:nth-child(3) { grid-column: span 4; }
-  .project-card:nth-child(4) { grid-column: span 5; }
-  .project-card:nth-child(5) { grid-column: span 7; }
+.works-list{display:flex;flex-direction:column;gap:2px;}
 
-  .project-card img {
-    width: 100%;
-    height: 100%;
-    min-height: 300px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.6s ease, filter 0.4s ease;
-    filter: grayscale(15%);
-  }
-  .project-card:hover img { transform: scale(1.04); filter: grayscale(0%); }
+.work-item{
+  position:relative;overflow:hidden;cursor:pointer;
+  width:100%;
+}
+/* ↓ 写真の縦横比 — ここで調整（例: 16/7 で横長、3/2 で標準） */
+.work-item .work-img{
+  aspect-ratio:16/7;
+  overflow:hidden;background:var(--light);
+}
+.work-item .work-img img,
+.work-item .work-img .ph{
+  width:100%;height:100%;
+  transition:transform 0.6s ease;
+}
+.work-item:hover .work-img img{transform:scale(1.03);}
 
-  .project-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 24px;
-    background: linear-gradient(transparent, rgba(12,12,12,0.8));
-    color: var(--white);
-    transform: translateY(4px);
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-  }
-  .project-card:hover .project-overlay { opacity: 1; transform: translateY(0); }
-  .project-overlay h3 { font-size: 18px; font-weight: 300; margin-bottom: 4px; }
-  .project-overlay p { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; color: var(--sand); }
+.work-caption{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:28px 32px;
+  background:linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 55%);
+  opacity:0;transition:opacity 0.28s;
+}
+.work-item:hover .work-caption{opacity:1;}
+.cap-jp{font-family:var(--jp);font-size:18px;font-weight:400;color:#fff;margin-bottom:4px;}
+.cap-en{font-family:var(--en);font-size:12px;color:rgba(255,255,255,0.65);}
+.cap-meta{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.08em;margin-top:6px;}
 
-  /* ── PROJECT MODAL ── */
-  .modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(12,12,12,0.95);
-    z-index: 200;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 48px;
-  }
-  .modal-backdrop.open { display: flex; }
-  .modal {
-    background: var(--white);
-    max-width: 1000px;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-  .modal-images { position: relative; }
-  .modal-images img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .modal-thumb-row {
-    display: flex;
-    gap: 4px;
-    padding: 4px;
-    background: var(--light);
-  }
-  .modal-thumb-row img { width: 80px; height: 60px; object-fit: cover; cursor: pointer; opacity: 0.6; transition: opacity 0.2s; }
-  .modal-thumb-row img.active, .modal-thumb-row img:hover { opacity: 1; }
-  .modal-info { padding: 48px 40px; display: flex; flex-direction: column; }
-  .modal-tag { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--sand); margin-bottom: 16px; }
-  .modal-title { font-size: 32px; font-weight: 300; margin-bottom: 24px; }
-  .modal-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; margin-bottom: 32px; border-top: var(--rule); border-bottom: var(--rule); padding: 20px 0; }
-  .modal-meta-item label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--sand); display: block; margin-bottom: 4px; }
-  .modal-meta-item span { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; color: var(--black); }
-  .modal-desc { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; line-height: 1.9; color: var(--gray); flex: 1; }
-  .modal-close {
-    position: absolute; top: 24px; right: 24px;
-    background: none; border: 1px solid rgba(245,242,238,0.3);
-    color: var(--white); width: 40px; height: 40px;
-    cursor: pointer; font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
-  }
-  .modal-close:hover { background: rgba(245,242,238,0.1); }
+/* ══════════════════════════════
+   02 PRODUCTS  (WORKS直下)
+══════════════════════════════ */
+.prod-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:32px;
+}
+.prod-card{}
+.prod-img{aspect-ratio:4/3;overflow:hidden;background:var(--light);}
+.prod-img .ph{height:100%;}
+.prod-body{padding:16px 0 0;}
+.prod-name-jp{font-family:var(--jp);font-size:15px;font-weight:400;margin-bottom:2px;}
+.prod-name-en{font-family:var(--en);font-size:11px;color:var(--gray);margin-bottom:10px;}
+.prod-desc-jp{font-family:var(--jp);font-size:12px;line-height:1.9;color:var(--mid);margin-bottom:4px;}
+.prod-desc-en{font-family:var(--en);font-size:11px;line-height:1.7;color:var(--gray);margin-bottom:10px;}
+.prod-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--gray);}
 
-  /* ── DRAWINGS ── */
-  #drawings { padding: 120px 48px; background: var(--light); }
-  .drawings-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 64px;
-  }
-  .drawing-item { border: var(--rule); background: white; }
-  .drawing-item img { width: 100%; height: 220px; object-fit: cover; border-bottom: var(--rule); filter: contrast(1.1) grayscale(30%); }
-  .drawing-caption { padding: 16px 20px; }
-  .drawing-caption h4 { font-size: 14px; font-weight: 300; margin-bottom: 4px; }
-  .drawing-caption p { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--gray); letter-spacing: 0.15em; }
+/* ══════════════════════════════
+   03 NEWS
+══════════════════════════════ */
+.news-list{display:flex;flex-direction:column;}
+.news-row{
+  display:grid;grid-template-columns:120px 72px 1fr 40px;
+  gap:0 24px;align-items:center;
+  padding:18px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer;
+  transition:background 0.15s,padding 0.15s,margin 0.15s;
+}
+.news-row:first-child{border-top:1px solid var(--border);}
+.news-row:hover{background:var(--off);margin:0 -16px;padding:18px 16px;}
+.news-thumb{aspect-ratio:5/3;overflow:hidden;background:var(--light);}
+.news-thumb .ph{height:100%;font-size:0;}
+.news-thumb .ph::before{width:14px;height:14px;background-size:12px;}
+.news-date{font-family:var(--mono);font-size:10px;color:var(--gray);white-space:nowrap;}
+.news-content .news-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--gray);margin-bottom:3px;}
+.news-title-jp{font-family:var(--jp);font-size:13px;font-weight:400;line-height:1.5;margin-bottom:2px;}
+.news-title-en{font-family:var(--en);font-size:11px;color:var(--gray);line-height:1.4;}
+.news-arrow{font-family:var(--mono);font-size:11px;color:var(--gray);text-align:right;}
 
-  /* ── PROFILE ── */
-  #profile {
-    padding: 120px 48px;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 96px;
-    align-items: start;
-  }
-  .profile-portrait { position: sticky; top: 120px; }
-  .profile-portrait img { width: 100%; aspect-ratio: 3/4; object-fit: cover; filter: grayscale(10%); }
-  .profile-portrait-caption { margin-top: 16px; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--gray); }
-  .profile-content {}
-  .profile-name { font-size: clamp(40px, 5vw, 72px); font-weight: 300; letter-spacing: -0.02em; line-height: 1; margin-bottom: 8px; }
-  .profile-name-ja { font-family: 'Noto Sans JP', sans-serif; font-size: 16px; font-weight: 300; color: var(--gray); margin-bottom: 48px; }
-  .profile-bio { font-family: 'Noto Sans JP', sans-serif; font-size: 14px; line-height: 2; color: var(--gray); margin-bottom: 48px; }
-  .cv-section { margin-bottom: 40px; }
-  .cv-section h3 { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--sand); margin-bottom: 20px; text-transform: uppercase; border-bottom: var(--rule); padding-bottom: 12px; }
-  .cv-item { display: grid; grid-template-columns: 80px 1fr; gap: 16px; padding: 10px 0; border-bottom: var(--rule); }
-  .cv-year { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gray); }
-  .cv-desc { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; }
-  .cv-desc strong { font-weight: 400; }
+/* ══════════════════════════════
+   04 ABOUT
+══════════════════════════════ */
+/* Profile */
+.profile-grid{
+  display:grid;grid-template-columns:220px 1fr;
+  gap:56px;align-items:start;
+  margin-bottom:72px;padding-bottom:72px;
+  border-bottom:1px solid var(--border);
+}
+.portrait-wrap{position:sticky;top:72px;}
+.portrait-ph{aspect-ratio:3/4;}
+.portrait-cap-jp{font-family:var(--jp);font-size:11px;color:var(--gray);margin-top:8px;}
+.portrait-cap-en{font-family:var(--mono);font-size:9px;color:var(--gray);letter-spacing:0.1em;margin-top:2px;}
 
-  /* ── PHILOSOPHY ── */
-  #philosophy { padding: 160px 48px; background: var(--black); color: var(--white); }
-  #philosophy .section-label { color: var(--sand); }
-  #philosophy .section-heading { color: var(--white); }
-  .philosophy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 0; }
-  .philosophy-quote {
-    grid-column: span 2;
-    font-size: clamp(28px, 4vw, 52px);
-    font-weight: 300;
-    font-style: italic;
-    line-height: 1.25;
-    border-bottom: 1px solid rgba(245,242,238,0.15);
-    padding-bottom: 80px;
-    margin-bottom: 80px;
-    color: rgba(245,242,238,0.85);
-  }
-  .philosophy-quote cite {
-    display: block;
-    font-size: 12px;
-    font-style: normal;
-    font-family: 'Space Mono', monospace;
-    color: var(--sand);
-    letter-spacing: 0.2em;
-    margin-top: 32px;
-  }
-  .philosophy-pillar {
-    padding: 48px;
-    border: 1px solid rgba(245,242,238,0.1);
-  }
-  .philosophy-pillar h3 { font-size: 24px; font-weight: 300; margin-bottom: 20px; color: var(--sand); }
-  .philosophy-pillar p { font-family: 'Noto Sans JP', sans-serif; font-size: 13px; line-height: 2; color: rgba(245,242,238,0.6); }
+.prof-name-jp{font-family:var(--jp);font-size:clamp(28px,4vw,48px);font-weight:300;letter-spacing:-0.01em;line-height:1.05;margin-bottom:4px;}
+.prof-name-en{font-family:var(--en);font-size:14px;color:var(--gray);font-weight:300;margin-bottom:28px;}
+.prof-bio-jp{font-family:var(--jp);font-size:13px;line-height:2.2;color:var(--mid);margin-bottom:6px;}
+.prof-bio-en{font-family:var(--en);font-size:11px;line-height:1.9;color:var(--gray);margin-bottom:36px;}
 
-  /* ── WORKFLOW ── */
-  #workflow { padding: 120px 48px; }
-  .workflow-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 64px; }
-  .workflow-step { padding: 40px 32px; border-right: var(--rule); position: relative; }
-  .workflow-step:last-child { border-right: none; }
-  .workflow-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 48px;
-    color: var(--light);
-    font-weight: 400;
-    line-height: 1;
-    margin-bottom: 24px;
-  }
-  .workflow-step h3 { font-size: 18px; font-weight: 300; margin-bottom: 12px; }
-  .workflow-step p { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; line-height: 1.9; color: var(--gray); }
-  .workflow-connector {
-    position: absolute;
-    top: 48px; right: -1px;
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--sand);
-    transform: translateX(50%);
-  }
+.cv-block{margin-bottom:28px;}
+.cv-head{
+  display:grid;grid-template-columns:1fr 1fr;
+  font-family:var(--mono);font-size:9px;letter-spacing:0.18em;color:var(--gray);text-transform:uppercase;
+  border-bottom:1px solid var(--border);padding-bottom:8px;
+}
+.cv-row{
+  display:grid;grid-template-columns:90px 1fr 1fr;
+  gap:0 16px;padding:9px 0;
+  border-bottom:1px solid var(--border);align-items:baseline;
+}
+.cv-yr{font-family:var(--mono);font-size:10px;color:var(--gray);}
+.cv-jp{font-family:var(--jp);font-size:12px;}
+.cv-jp strong{font-weight:400;}
+.cv-en{font-family:var(--en);font-size:11px;color:var(--gray);}
 
-  /* ── AWARDS ── */
-  #awards { padding: 120px 48px; background: var(--light); }
-  .awards-list { margin-top: 64px; }
-  .award-item {
-    display: grid;
-    grid-template-columns: 100px 1fr 200px;
-    align-items: center;
-    padding: 28px 0;
-    border-bottom: var(--rule);
-    transition: background 0.2s;
-  }
-  .award-item:hover { background: rgba(196,180,154,0.1); margin: 0 -24px; padding: 28px 24px; }
-  .award-year { font-family: 'Space Mono', monospace; font-size: 12px; color: var(--sand); }
-  .award-name { font-size: 18px; font-weight: 300; }
-  .award-org { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gray); letter-spacing: 0.15em; text-align: right; }
+/* Vision */
+.vision-wrap{
+  margin-bottom:72px;padding-bottom:72px;border-bottom:1px solid var(--border);
+}
+.vision-titles{margin-bottom:32px;}
+.vtitle-jp{font-family:var(--jp);font-size:clamp(20px,3vw,36px);font-weight:300;margin-bottom:4px;}
+.vtitle-en{font-family:var(--en);font-size:12px;color:var(--gray);}
+.vision-body{
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;
+  margin-bottom:40px;
+}
+.vquote-jp{font-family:var(--jp);font-size:15px;line-height:2.1;color:var(--mid);font-style:normal;margin-bottom:6px;}
+.vquote-en{font-family:var(--en);font-size:12px;line-height:1.9;color:var(--gray);font-style:italic;}
+.vcite{font-family:var(--mono);font-size:9px;color:var(--gray);letter-spacing:0.1em;margin-top:12px;}
 
-  /* ── PRODUCTS ── */
-  #products { padding: 120px 48px; }
-  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 64px; }
-  .product-card { border: var(--rule); transition: border-color 0.3s; }
-  .product-card:hover { border-color: var(--sand); }
-  .product-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
-  .product-info { padding: 24px; }
-  .product-info h3 { font-size: 20px; font-weight: 300; margin-bottom: 8px; }
-  .product-info p { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; color: var(--gray); line-height: 1.8; margin-bottom: 16px; }
-  .product-tag { display: inline-block; font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--sand); border: 1px solid var(--sand); padding: 4px 10px; }
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:40px;}
+.pillar h4{font-family:var(--jp);font-size:13px;font-weight:500;margin-bottom:2px;}
+.pillar h4 .en{font-family:var(--en);font-size:10px;color:var(--gray);font-weight:300;display:block;margin-top:1px;}
+.pillar .pjp{font-family:var(--jp);font-size:12px;line-height:1.9;color:var(--mid);margin-bottom:3px;}
+.pillar .pen{font-family:var(--en);font-size:11px;line-height:1.7;color:var(--gray);}
 
-  /* ── COMPANY ── */
-  #company { padding: 120px 48px; background: var(--black); color: var(--white); }
-  #company .section-label { color: var(--sand); }
-  #company .section-heading { color: var(--white); }
-  .company-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 96px; }
-  .company-info table { width: 100%; border-collapse: collapse; }
-  .company-info tr { border-bottom: 1px solid rgba(245,242,238,0.1); }
-  .company-info td { padding: 16px 0; font-family: 'Noto Sans JP', sans-serif; font-size: 13px; }
-  .company-info td:first-child { color: var(--sand); font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 0.15em; width: 160px; }
-  .company-map { position: relative; }
-  .company-map img { width: 100%; height: 320px; object-fit: cover; filter: grayscale(100%) contrast(1.2); opacity: 0.6; }
-  .company-address {
-    position: absolute; bottom: 0; left: 0;
-    background: var(--black); padding: 24px;
-    font-family: 'Noto Sans JP', sans-serif;
-    font-size: 12px; line-height: 1.9;
-    color: rgba(245,242,238,0.7);
-  }
+/* Awards */
+.awards-wrap{margin-bottom:0;}
+.block-title{margin-bottom:24px;}
+.bt-jp{font-family:var(--jp);font-size:clamp(18px,2.5vw,32px);font-weight:300;margin-bottom:3px;}
+.bt-en{font-family:var(--en);font-size:12px;color:var(--gray);}
 
-  /* ── ARTICLES ── */
-  #articles { padding: 120px 48px; }
-  .articles-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2px; margin-top: 64px; }
-  .article-featured { position: relative; overflow: hidden; background: var(--light); }
-  .article-featured img { width: 100%; height: 480px; object-fit: cover; filter: grayscale(20%); transition: transform 0.6s; }
-  .article-featured:hover img { transform: scale(1.03); }
-  .article-featured-info { padding: 32px; }
-  .article-featured-tag { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: var(--sand); margin-bottom: 12px; }
-  .article-featured-title { font-size: 24px; font-weight: 300; line-height: 1.3; margin-bottom: 12px; }
-  .article-featured-date { font-family: 'Space Mono', monospace; font-size: 10px; color: var(--gray); }
-  .articles-side { display: flex; flex-direction: column; gap: 2px; }
-  .article-small { display: grid; grid-template-columns: 100px 1fr; background: var(--light); }
-  .article-small img { width: 100%; height: 100%; object-fit: cover; }
-  .article-small-info { padding: 20px; }
-  .article-small-tag { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.15em; color: var(--sand); margin-bottom: 8px; }
-  .article-small-title { font-size: 14px; font-weight: 300; line-height: 1.4; margin-bottom: 8px; }
-  .article-small-date { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--gray); }
+.award-row{
+  display:grid;grid-template-columns:68px 1fr 1fr 180px;
+  gap:0 20px;align-items:baseline;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.award-row:first-of-type{border-top:1px solid var(--border);}
+.ayr{font-family:var(--mono);font-size:10px;color:var(--gray);}
+.ajp{font-family:var(--jp);font-size:13px;font-weight:400;}
+.aen{font-family:var(--en);font-size:11px;color:var(--gray);}
+.aorg{font-family:var(--mono);font-size:9px;color:var(--gray);text-align:right;}
 
-  /* ── FOOTER ── */
-  footer {
-    background: var(--black);
-    color: rgba(245,242,238,0.5);
-    padding: 64px 48px 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 48px;
-    border-top: 1px solid rgba(245,242,238,0.1);
-  }
-  .footer-logo {
-    font-family: 'Space Mono', monospace;
-    font-size: 14px;
-    letter-spacing: 0.2em;
-    color: var(--white);
-    margin-bottom: 16px;
-    display: block;
-  }
-  .footer-tagline { font-family: 'Noto Sans JP', sans-serif; font-size: 11px; line-height: 1.9; }
-  .footer-col h4 { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 0.25em; color: var(--sand); margin-bottom: 20px; text-transform: uppercase; }
-  .footer-col ul { list-style: none; }
-  .footer-col ul li { margin-bottom: 10px; }
-  .footer-col ul li a { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; color: rgba(245,242,238,0.5); text-decoration: none; transition: color 0.2s; }
-  .footer-col ul li a:hover { color: var(--white); }
-  .footer-bottom { grid-column: span 3; border-top: 1px solid rgba(245,242,238,0.1); padding-top: 24px; font-family: 'Space Mono', monospace; font-size: 10px; display: flex; justify-content: space-between; }
+/* ══════════════════════════════
+   05 CONTACT
+   内部に COMPANY + FLOW + MAIL FORM
+══════════════════════════════ */
+#contact{padding-top:88px;}
 
-  /* ── FADE IN ── */
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-  .reveal.visible { opacity: 1; transform: none; }
+/* COMPANY */
+.co-wrap{
+  margin-bottom:80px;padding-bottom:80px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.co-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start;}
+.co-table{width:100%;border-collapse:collapse;}
+.co-table tr{border-bottom:1px solid rgba(255,255,255,0.1);}
+.co-table td{padding:12px 0;vertical-align:top;}
+.co-table td:first-child{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.35);width:110px;padding-top:14px;
+}
+.co-jp{font-family:var(--jp);font-size:13px;color:rgba(255,255,255,0.8);display:block;}
+.co-en{font-family:var(--en);font-size:11px;color:rgba(255,255,255,0.4);display:block;margin-top:1px;}
+.co-map-ph{height:220px;background:rgba(255,255,255,0.06);border:none;color:rgba(255,255,255,0.2);}
+.co-map-ph::before{border-color:rgba(255,255,255,0.2);}
+.co-addr-jp{font-family:var(--jp);font-size:12px;color:rgba(255,255,255,0.5);line-height:1.9;margin-top:12px;}
+.co-addr-en{font-family:var(--en);font-size:11px;color:rgba(255,255,255,0.3);line-height:1.7;margin-top:2px;}
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    #hero { grid-template-columns: 1fr; }
-    .hero-right { height: 50vh; }
-    #profile { grid-template-columns: 1fr; gap: 48px; }
-    .profile-portrait { position: static; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .project-card:nth-child(n) { grid-column: span 1; }
-    .workflow-steps { grid-template-columns: 1fr 1fr; }
-    .articles-grid { grid-template-columns: 1fr; }
-    .company-grid { grid-template-columns: 1fr; }
-    footer { grid-template-columns: 1fr; }
-    .footer-bottom { grid-column: 1; flex-direction: column; gap: 12px; }
-    section, #profile, #hero { padding-left: 24px; padding-right: 24px; }
-    #projects, #drawings, #awards, #products, #articles, #workflow, #philosophy, #company { padding-left: 24px; padding-right: 24px; }
-    .products-grid, .drawings-grid { grid-template-columns: 1fr; }
-    .philosophy-pillar { grid-column: span 2; }
-    .modal { grid-template-columns: 1fr; }
-  }
+/* FLOW inside CONTACT */
+.flow-wrap{
+  margin-bottom:80px;padding-bottom:80px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.flow-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:24px;
+}
+.flow-step{}
+.flow-photo{aspect-ratio:1/1;overflow:hidden;background:rgba(255,255,255,0.06);}
+.flow-photo .ph{height:100%;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.2);}
+.flow-photo .ph::before{border-color:rgba(255,255,255,0.15);}
+.flow-body{padding-top:16px;}
+.flow-num{font-family:var(--mono);font-size:24px;color:rgba(255,255,255,0.12);line-height:1;margin-bottom:10px;}
+.ftitle-jp{font-family:var(--jp);font-size:13px;font-weight:500;color:rgba(255,255,255,0.85);margin-bottom:2px;}
+.ftitle-en{font-family:var(--en);font-size:10px;color:rgba(255,255,255,0.35);margin-bottom:10px;}
+.fdesc-jp{font-family:var(--jp);font-size:11px;line-height:1.9;color:rgba(255,255,255,0.5);}
+.fdesc-en{font-family:var(--en);font-size:10px;line-height:1.7;color:rgba(255,255,255,0.28);margin-top:3px;}
+
+/* MAIL FORM */
+.form-wrap{}
+.form-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+}
+.form-left{padding-right:56px;}
+.form-right{}
+.flead-jp{font-family:var(--jp);font-size:13px;line-height:2.1;color:rgba(255,255,255,0.6);margin-bottom:6px;}
+.flead-en{font-family:var(--en);font-size:11px;line-height:1.8;color:rgba(255,255,255,0.3);}
+.form-field{margin-bottom:20px;}
+.form-field label{
+  display:block;font-family:var(--jp);font-size:11px;
+  color:var(--mid);margin-bottom:6px;
+}
+.form-field label .en{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;margin-left:8px;color:var(--gray);}
+.form-field input,
+.form-field textarea,
+.form-field select{
+  width:100%;background:transparent;
+  border:none;border-bottom:1px solid var(--border);
+  color:var(--black);
+  font-family:var(--jp);font-size:13px;
+  padding:10px 0;outline:none;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;
+  border-radius:0;
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus{border-bottom-color:var(--black);}
+.form-field textarea{resize:vertical;min-height:100px;padding:10px 4px;}
+.form-field select option{background:var(--white);}
+.form-submit{
+  display:inline-block;margin-top:8px;
+  font-family:var(--jp);font-size:13px;
+  background:var(--black);color:var(--white);
+  border:none;padding:12px 36px;cursor:pointer;
+  font-weight:500;letter-spacing:0.04em;
+  transition:opacity 0.2s;
+}
+.form-submit:hover{opacity:0.75;}
+.form-note{font-family:var(--jp);font-size:11px;color:var(--gray);margin-top:10px;line-height:1.8;}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+footer{
+  padding:40px 32px 28px;
+  display:grid;grid-template-columns:1fr auto auto;
+  gap:32px 64px;align-items:start;
+  border-top:1px solid var(--border);
+}
+.ft-logo{text-decoration:none;}
+.ft-tag-jp{font-family:var(--jp);font-size:11px;color:var(--gray);margin-top:6px;line-height:1.7;}
+.ft-tag-en{font-family:var(--en);font-size:10px;color:var(--gray);margin-top:1px;}
+.ft-col h4{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;color:var(--gray);margin-bottom:12px;text-transform:uppercase;}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.ft-col a{font-family:var(--jp);font-size:12px;color:var(--gray);text-decoration:none;transition:color 0.15s;}
+.ft-col a:hover{color:var(--black);}
+.ft-bottom{
+  grid-column:span 3;border-top:1px solid var(--border);padding-top:16px;
+  display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;color:var(--gray);
+}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:900px){
+  nav{padding:0 16px;}
+  .nav-logo{font-size:11px;}
+  .nav-right{gap:16px;}
+  .sec{padding:56px 20px;}
+  .profile-grid{grid-template-columns:1fr;gap:32px;}
+  .portrait-wrap{position:static;}
+  .cv-row{grid-template-columns:72px 1fr;}
+  .cv-en{display:none;}
+  .pillars{grid-template-columns:1fr 1fr;gap:24px;}
+  .prod-grid{grid-template-columns:1fr 1fr;}
+  .co-grid{grid-template-columns:1fr;}
+  .flow-grid{grid-template-columns:1fr 1fr;}
+  .award-row{grid-template-columns:60px 1fr;}
+  .aen,.aorg{display:none;}
+  .modal-box{grid-template-columns:1fr;}
+  .news-row{grid-template-columns:88px 1fr;}
+  .news-date,.news-arrow{display:none;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-left{padding-right:0;margin-bottom:32px;}
+  .vision-body{grid-template-columns:1fr;}
+  footer{grid-template-columns:1fr;}
+  .ft-bottom{grid-column:1;flex-direction:column;gap:6px;}
+}
+@media(max-width:580px){
+  .nav-right{display:none;}
+  .pillars{grid-template-columns:1fr;}
+  .prod-grid{grid-template-columns:1fr;}
+  .flow-grid{grid-template-columns:1fr 1fr;}
+}
 </style>
 </head>
 <body>
 
-<!-- Custom Cursor -->
-<div class="cursor" id="cursor"></div>
-
-<!-- Modal -->
-<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
-  <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
-  <div class="modal" id="modal-content">
-    <div class="modal-images">
-      <img src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=600&q=80" id="modal-main-img" alt="">
-      <div class="modal-thumb-row" id="modal-thumbs"></div>
-    </div>
-    <div class="modal-info">
-      <div class="modal-tag" id="modal-tag">住宅建築（更新中）</div>
-      <h2 class="modal-title" id="modal-title">—</h2>
-      <div class="modal-meta" id="modal-meta"></div>
-      <p class="modal-desc" id="modal-desc"></p>
+<!-- ══════ MODAL ══════ -->
+<div class="modal-bg" id="modal" onclick="handleModalClick(event)">
+  <button class="modal-x" id="modal-x">✕</button>
+  <div class="modal-box">
+    <div class="modal-img-area"><div class="ph" id="modal-img">写真を挿入 / Insert photo</div></div>
+    <div class="modal-body">
+      <div class="modal-type" id="m-type"></div>
+      <div class="m-name-jp" id="m-name-jp"></div>
+      <div class="m-name-en" id="m-name-en"></div>
+      <div class="modal-meta" id="m-meta"></div>
+      <p class="m-desc-jp" id="m-desc-jp"></p>
+      <p class="m-desc-en" id="m-desc-en"></p>
     </div>
   </div>
 </div>
 
-<!-- Navigation -->
+
+<!-- ══════════════════════════════════════════
+  NAV  ↓ 事務所名・リンクを変更
+══════════════════════════════════════════ -->
 <nav>
-  <a href="#hero" class="nav-logo">Studio Yutaka Architects</a>
-  <ul class="nav-links">
-    <li><a href="#projects">Works</a></li>
-    <li><a href="#drawings">図面</a></li>
-    <li><a href="#profile">Profile</a></li>
-    <li><a href="#philosophy">Philosophy</a></li>
-    <li><a href="#workflow">Process</a></li>
-    <li><a href="#awards">Awards</a></li>
-    <li><a href="#products">Products</a></li>
-    <li><a href="#company">Company</a></li>
-    <li><a href="#articles">Articles</a></li>
-  </ul>
+  <a href="#works" class="nav-logo">
+    <span class="logo-studio">STUDIO&nbsp;</span><!-- 黄緑・太字 -->
+    <span class="logo-yutaka">YUTAKA</span><!-- 薄い・細字 -->
+    <span class="logo-arch">&nbsp;ARCHITECTS</span><!-- 黄緑・太字 -->
+  </a>
+  <div class="nav-right">
+    <a href="#works"   class="nav-link">Works</a>
+    <a href="#news"    class="nav-link">News</a>
+    <a href="#about"   class="nav-link">About</a>
+    <a href="#contact" class="nav-link">Contact</a>
+  </div>
 </nav>
 
-<!-- Hero -->
-<section id="hero">
-  <div class="hero-left">
-    <p class="hero-tag">Tokyo — Established 2024.4</p>
-    <h1 class="hero-title">Space<br>as <em>Memory</em></h1>
-    <p class="hero-sub">私たちは、人と場所の関係を丁寧に読み解き、時を超えて記憶に残る空間を設計します。素材と光が語る建築を、ともに。</p>
-    <div class="hero-scroll">Scroll to explore</div>
-  </div>
-  <div class="hero-right">
-    <img src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=900&q=80" alt="Featured Work">
-    <span class="hero-year">2024</span>
+
+<!-- ══════════════════════════════════════════
+  01 WORKS — 縦一列・大きく
+  ↓ openModal({...}) 内と hover テキストを編集
+══════════════════════════════════════════ -->
+<section id="works" style="padding-top:56px;">
+  <div class="works-list">
+
+    <!-- ▼ Work 1 -->
+    <div class="work-item" onclick='openModal({
+      type:   "住宅 / Residential",
+      nameJp: "プロジェクト名（日本語）",
+      nameEn: "Project Name (EN)",
+      year:   "20XX",
+      loc:    "場所を入力",
+      area:   "面積を入力",
+      descJp: "プロジェクトの説明を日本語で入力してください。",
+      descEn: "Describe the project in English."
+    })'>
+      <div class="work-img">
+        <!-- ↓ <img src="works1.jpg" alt=""> に置き換え（推奨: 横長・高解像度） -->
+        <div class="ph">写真を挿入 / Insert photo（推奨: 横長・高解像度）</div>
+      </div>
+      <div class="work-caption">
+        <div class="cap-jp">プロジェクト名（日本語）</div><!-- ↓ -->
+        <div class="cap-en">Project Name — Location</div><!-- ↓ -->
+        <div class="cap-meta">TYPE — YEAR — LOCATION</div><!-- ↓ -->
+      </div>
+    </div>
+
+    <!-- ▼ Work 2 -->
+    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+      <div class="work-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="work-caption">
+        <div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div>
+      </div>
+    </div>
+
+    <!-- ▼ Work 3 -->
+    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+      <div class="work-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="work-caption">
+        <div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div>
+      </div>
+    </div>
+
+    <!-- ▼ Work 4 -->
+    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+      <div class="work-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="work-caption">
+        <div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div>
+      </div>
+    </div>
+
+    <!-- ▼ Work 5 （不要なら削除） -->
+    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+      <div class="work-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="work-caption">
+        <div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
-<!-- Projects -->
-<section id="projects" class="reveal">
-  <div class="section-label" data-num="01">Works</div>
-  <h2 class="section-heading">Selected Projects</h2>
-  <div class="projects-grid">
 
-    <div class="project-card" onclick='openModal({title:"光の家 / House of Light",tag:"住宅建築",year:"2023",location:"神奈川県鎌倉市",area:"210 m²",imgs:["https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=700&q=80","https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=700&q=80","https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&q=80"],desc:"斜面地に建つ住宅。光の通り道を設計の主軸とし、季節と時刻によって変容する室内環境を作り出した。コンクリートと木材の対話が、居住者に豊かな感覚体験を提供する。"})'>
-      <img src="https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=700&q=80" alt="">
-      <div class="project-overlay">
-        <h3>更新中 / name</h3>
-        <p>住宅 — 2024 — tokyo</p>
+<!-- ══════════════════════════════════════════
+  02 PRODUCTS  （WORKSの直下）
+  ↓ プロダクト情報を変更してください
+══════════════════════════════════════════ -->
+<section id="products" class="sec toned reveal">
+  <div class="sec-head">
+    <div class="sec-num">02</div>
+    <div class="sec-title-en">Products</div>
+    <div class="sec-title-jp">プロダクト</div>
+    <div class="sec-lead">
+      <p class="sec-lead-jp">職人との協働により開発した家具・素材・照明プロダクト。</p>
+      <p class="sec-lead-en">Furniture, materials and lighting developed with craftspeople.</p>
+    </div>
+  </div>
+  <div class="prod-grid">
+
+    <div class="prod-card">
+      <!-- ↓ <img src="product1.jpg" alt=""> に置き換え -->
+      <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="prod-body">
+        <div class="prod-name-jp">プロダクト名（日本語）</div><!-- ↓ -->
+        <div class="prod-name-en">Product Name (EN)</div><!-- ↓ -->
+        <p class="prod-desc-jp">説明文を日本語で入力してください。素材・製法・コンセプトなどを記述します。</p><!-- ↓ -->
+        <p class="prod-desc-en">Describe the product in English.</p><!-- ↓ -->
+        <span class="prod-tag">CATEGORY</span><!-- ↓ FURNITURE / MATERIAL / LIGHTING -->
       </div>
     </div>
 
-    <div class="project-card" onclick='openModal({title:"コートハウス",tag:"集合住宅",year:"2022",location:"東京都世田谷区",area:"420 m²",imgs:["https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700&q=80","https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=700&q=80"],desc:"中庭を囲む集合住宅。プライバシーと共同体の共存を目指した設計。各住戸の開口部が中庭の緑へと向かい、都市の喧騒から隔絶された静寂な空間を生み出す。"})'>
-      <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700&q=80" alt="">
-      <div class="project-overlay">
-        <h3>展覧会（設計補助）</h3>
-        <p>会場構成 — 2024 — 恵比寿</p>
+    <div class="prod-card">
+      <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="prod-body">
+        <div class="prod-name-jp">プロダクト名（日本語）</div>
+        <div class="prod-name-en">Product Name (EN)</div>
+        <p class="prod-desc-jp">説明文を日本語で入力してください。</p>
+        <p class="prod-desc-en">Describe the product in English.</p>
+        <span class="prod-tag">CATEGORY</span>
       </div>
     </div>
 
-    <div class="project-card" onclick='openModal({title:"茶室改修",tag:"リノベーション",year:"2022",location:"京都府",area:"45 m²",imgs:["https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=700&q=80"],desc:"江戸時代の茶室の現代的解釈による改修。伝統的な比例感を維持しながら、現代の素材と技術を用いて新たな茶の精神を空間に宿らせた。"})'>
-      <img src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=700&q=80" alt="">
-      <div class="project-overlay">
-        <h3>高校改修計画（法規チェック補助）</h3>
-        <p>リノベーション — 2024 — 長野</p>
-      </div>
-    </div>
-
-    <div class="project-card" onclick='openModal({title:"Gallery Blanc",tag:"ギャラリー",year:"2021",location:"東京都渋谷区",area:"330 m²",imgs:["https://images.unsplash.com/photo-1577495508326-19a1b3cf65b9?w=700&q=80"],desc:"現代アートのための白い箱。壁と天井の境界を溶かすデザインにより、作品が空間に浮遊するような体験を生み出す。自然光の制御に細心の注意を払った。"})'>
-      <img src="https://images.unsplash.com/photo-1577495508326-19a1b3cf65b9?w=700&q=80" alt="">
-      <div class="project-overlay">
-        <h3>Stockpile</h3>
-        <p>備蓄倉庫兼オフィス — 2025 Thimphu, Rtsi-rang</p>
-      </div>
-    </div>
-
-    <div class="project-card" onclick='openModal({title:"森のオフィス",tag:"オフィス",year:"2021",location:"長野県軽井沢町",area:"580 m²",imgs:["https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80"],desc:"自然の中に溶け込むワークプレイス。落葉樹の森を切り取る大開口と、内外を繋ぐ縁側空間が、働く人々に季節の移ろいを感じさせる。"})'>
-      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="">
-      <div class="project-overlay">
-        <h3>ユースセンター</h3>
-        <p>学校 — 2025 — Samthe</p>
+    <div class="prod-card">
+      <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+      <div class="prod-body">
+        <div class="prod-name-jp">プロダクト名（日本語）</div>
+        <div class="prod-name-en">Product Name (EN)</div>
+        <p class="prod-desc-jp">説明文を日本語で入力してください。</p>
+        <p class="prod-desc-en">Describe the product in English.</p>
+        <span class="prod-tag">CATEGORY</span>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- Drawings -->
-<section id="drawings" class="reveal">
-  <div class="section-label" data-num="02">図面 / Drawings</div>
-  <h2 class="section-heading">Architectural Drawings</h2>
-  <div class="drawings-grid">
-    <div class="drawing-item">
-      <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80" alt="平面図">
-      <div class="drawing-caption"><h4>更新中 — 平面図</h4><p>FLOOR PLAN / 1:100</p></div>
-    </div>
-    <div class="drawing-item">
-      <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80" alt="断面図">
-      <div class="drawing-caption"><h4>更新中 — 断面図</h4><p>SECTION / 1:100</p></div>
-    </div>
-    <div class="drawing-item">
-      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="立面図">
-      <div class="drawing-caption"><h4>更新中 — 立面図</h4><p>ELEVATION / 1:200</p></div>
+
+<!-- ══════════════════════════════════════════
+  03 NEWS
+  ↓ 各記事の情報を変更（行コピーで追加可能）
+══════════════════════════════════════════ -->
+<section id="news" class="sec reveal">
+  <div class="sec-head">
+    <div class="sec-num">03</div>
+    <div class="sec-title-en">News</div>
+    <div class="sec-title-jp">ニュース</div>
+    <div class="sec-lead">
+      <!-- ↓ リード文を変更 -->
+      <p class="sec-lead-jp">最新のニュース、出版、講演、メディア掲載などをご紹介します。</p>
+      <p class="sec-lead-en">Latest updates, publications, lectures, and media coverage.</p>
     </div>
   </div>
-</section>
+  <div class="news-list">
 
-<!-- Profile -->
-<section id="profile" class="reveal">
-  <div class="profile-portrait">
-    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&q=80" alt="Portrait">
-    <p class="profile-portrait-caption">代表建築家 / Principal Architect</p>
-  </div>
-  <div class="profile-content">
-    <div class="section-label" data-num="03">Profile</div>
-    <h2 class="profile-name">Yutaka Saito</h2>
-    <p class="profile-name-ja">齋藤 裕</p>
-    <p class="profile-bio">編集中→信州大学大学院総合理工学研究科建築学専攻を卒業後、アトリエ系建築設計事務所（tokyo）にて4年間の研鑽を積む。その後、美術関係施設の設計を得意とするアトリエにてアルバイトののち、世界の建築の在り方を探求するために渡不。帰国後は未定。2024年にStudioYutakaArchitectsを設立。「Bio-Archipilia」をテーマに、住宅から美術館まで幅広いプロジェクトを手がける。作品は国内外の建築メディアに多数掲載されており（嘘）、国際的な建築賞を複数受賞している（だったらいいな）。</p>
-
-    <div class="cv-section">
-      <h3>Education</h3>
-      <div class="cv-item"><span class="cv-year">2004</span><div class="cv-desc"><strong>信州大学</strong> 建築学科 学士</div></div>
-      <div class="cv-item"><span class="cv-year">2006</span><div class="cv-desc"><strong>信州大学大学院総合理工学研究科建築学専攻</strong> 修士課程修了</div></div>
-    </div>
-    <div class="cv-section">
-      <h3>Experience</h3>
-      <div class="cv-item"><span class="cv-year">2020–24</span><div class="cv-desc"><strong>アトリエ系建築設計事務所</strong> Associate — Tokyo, Japan</div></div>
-      <div class="cv-item"><span class="cv-year">2025–27</span><div class="cv-desc"><strong>MoIT</strong> プロジェクト建築家</div></div>
-      <div class="cv-item"><span class="cv-year">2024–</span><div class="cv-desc"><strong>ATELIER 設立</strong> 代表建築家</div></div>
-    </div>
-    <div class="cv-section">
-      <h3>Teaching（編集中）</h3>
-      <div class="cv-item"><span class="cv-year">2015–</span><div class="cv-desc"><strong>NA</strong> 非常勤講師（建築設計スタジオ）</div></div>
-      <div class="cv-item"><span class="cv-year">2020</span><div class="cv-desc"><strong>NA</strong> Visiting Critic</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- Philosophy -->
-<section id="philosophy" class="reveal">
-  <div class="section-label" data-num="04">Philosophy</div>
-  <h2 class="section-heading" style="color:var(--white)">Design<br>Philosophy</h2>
-  <div class="philosophy-grid">
-    <blockquote class="philosophy-quote">
-      「建築とは、時間をかけて生まれる詩である。素材が風化し、光が移ろい、人が通り過ぎる。その全てを設計に織り込むことが、私たちの仕事です。」
-      <cite>— Yutaka Saito, 2024</cite>
-    </blockquote>
-    <div class="philosophy-pillar">
-      <h3>素材の誠実性</h3>
-      <p>素材はそれ自体が持つ固有の性質を正直に表現するべきだと考えます。コンクリートはコンクリートとして、木は木として、その本質が空間に滲み出ることで、建築は時間を纏います。</p>
-    </div>
-    <div class="philosophy-pillar">
-      <h3>詩の空間学</h3>
-      <p>光は設計の主役です。時間帯、季節、天候によって変容する光を「使いこなす」のではなく、「招く」ことで、居住者は建物を通じて自然の時間軸と繋がることができます。</p>
-    </div>
-    <div class="philosophy-pillar">
-      <h3>文脈との対話</h3>
-      <p>建築は孤立して存在しません。敷地の歴史、周辺の街並み、地域の気候風土——これらとの対話なしに成立する設計はありません。謙虚に場所の声を聴くことから始めます。</p>
-    </div>
-    <div class="philosophy-pillar">
-      <h3>余白の設計</h3>
-      <p>完成した建物は、居住者が自分の生活を投影する「余白」を持つべきです。過剰に決定された空間ではなく、使う人が少しずつ育てていける場所を目指します。</p>
-    </div>
-  </div>
-</section>
-
-<!-- Workflow -->
-<section id="workflow" class="reveal">
-  <div class="section-label" data-num="05">Process</div>
-  <h2 class="section-heading">Design Workflow</h2>
-  <div class="workflow-steps">
-    <div class="workflow-step">
-      <div class="workflow-num">01</div>
-      <div class="workflow-connector"></div>
-      <h3>Listening<br>ヒアリング</h3>
-      <p>クライアントの言葉の奥にある、本当の願いを聴き取ることから全てが始まります。何度も対話を重ねる時間を大切にします。</p>
-    </div>
-    <div class="workflow-step">
-      <div class="workflow-num">02</div>
-      <div class="workflow-connector"></div>
-      <h3>Research<br>調査・分析</h3>
-      <p>敷地調査、法規確認、周辺環境の読み解き。設計の可能性と制約を同時に把握します。</p>
-    </div>
-    <div class="workflow-step">
-      <div class="workflow-num">03</div>
-      <div class="workflow-connector"></div>
-      <h3>Concept<br>コンセプト</h3>
-      <p>一つの核となるアイデアを見つけます。これが設計判断の全ての基準となります。スケッチと模型で検証します。</p>
-    </div>
-    <div class="workflow-step">
-      <div class="workflow-num">04</div>
-      <div class="workflow-connector"></div>
-      <h3>Design<br>設計</h3>
-      <p>基本設計から実施設計へ。細部の納まりまで、コンセプトを貫いた設計図書を作成します。</p>
-    </div>
-    <div class="workflow-step">
-      <div class="workflow-num">05</div>
-      <h3>Supervision<br>監理</h3>
-      <p>現場に立ち会い、職人との対話を通じて設計意図を建築へと移植します。完成後のアフターフォローも行います。</p>
-    </div>
-  </div>
-</section>
-
-<!-- Awards -->
-<section id="awards" class="reveal">
-  <div class="section-label" data-num="06">Recognition</div>
-  <h2 class="section-heading">Awards &amp; Publications</h2>
-  <div class="awards-list">
-    <div class="award-item">
-      <span class="award-year">2024</span>
-      <span class="award-name">グッドデザイン賞 金賞（んなわけあるかい）</span>
-      <span class="award-org">公益財団法人日本デザイン振興会（んなわけあるかいpart２）</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2023</span>
-      <span class="award-name">日本建築学会作品選奨（希望）</span>
-      <span class="award-org">日本建築学会（自薦）</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2022</span>
-      <span class="award-name">AR House Award — Finalist</span>
-      <span class="award-org">Architectural Review, London</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2021</span>
-      <span class="award-name">ARCASIA Award for Architecture — Silver</span>
-      <span class="award-org">Architects Regional Council Asia</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2020</span>
-      <span class="award-name">住宅建築賞 優秀賞</span>
-      <span class="award-org">一般社団法人日本住宅協会</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2019</span>
-      <span class="award-name">掲載：Wallpaper* Architects Directory</span>
-      <span class="award-org">Wallpaper* Magazine, UK</span>
-    </div>
-    <div class="award-item">
-      <span class="award-year">2018</span>
-      <span class="award-name">SDレビュー 入選</span>
-      <span class="award-org">鹿島出版会</span>
-    </div>
-  </div>
-</section>
-
-<!-- Products -->
-<section id="products" class="reveal">
-  <div class="section-label" data-num="07">Products</div>
-  <h2 class="section-heading">Architectural Products</h2>
-  <div class="products-grid">
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80" alt="">
-      <div class="product-info">
-        <h3>Haze Chair</h3>
-        <p>和紙と金属フレームを組み合わせた椅子。光を透過する座面が、昼と夜で異なる表情を見せる。職人との協働による限定製作。</p>
-        <span class="product-tag">FURNITURE</span>
+    <!-- ↓ 行をコピーして記事を追加できます -->
+    <div class="news-row">
+      <div class="news-thumb"><div class="ph"></div></div><!-- ↓ <img src="n1.jpg" alt=""> -->
+      <span class="news-date">YYYY.MM.DD</span><!-- ↓ -->
+      <div class="news-content">
+        <div class="news-tag">NEWS</div><!-- ↓ NEWS / ESSAY / INTERVIEW / LECTURE / PUBLICATION -->
+        <div class="news-title-jp">記事タイトルを日本語で入力してください</div><!-- ↓ -->
+        <div class="news-title-en">Article title in English</div><!-- ↓ -->
       </div>
+      <span class="news-arrow">→</span>
     </div>
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="">
-      <div class="product-info">
-        <h3>Washi Panel System</h3>
-        <p>伝統的な和紙技術と現代建築の要求を融合した壁面パネルシステム。吸音性と光拡散性を兼ね備える。</p>
-        <span class="product-tag">MATERIAL</span>
+
+    <div class="news-row">
+      <div class="news-thumb"><div class="ph"></div></div>
+      <span class="news-date">YYYY.MM.DD</span>
+      <div class="news-content">
+        <div class="news-tag">INTERVIEW</div>
+        <div class="news-title-jp">記事タイトルを日本語で入力してください</div>
+        <div class="news-title-en">Article title in English</div>
       </div>
+      <span class="news-arrow">→</span>
     </div>
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=600&q=80" alt="">
-      <div class="product-info">
-        <h3>Slope Light</h3>
-        <p>天井への間接照明を最適化する傾斜型器具。空間に奥行きと柔らかさをもたらすよう設計された照明プロダクト。</p>
-        <span class="product-tag">LIGHTING</span>
+
+    <div class="news-row">
+      <div class="news-thumb"><div class="ph"></div></div>
+      <span class="news-date">YYYY.MM.DD</span>
+      <div class="news-content">
+        <div class="news-tag">ESSAY</div>
+        <div class="news-title-jp">記事タイトルを日本語で入力してください</div>
+        <div class="news-title-en">Article title in English</div>
       </div>
+      <span class="news-arrow">→</span>
     </div>
+
+    <div class="news-row">
+      <div class="news-thumb"><div class="ph"></div></div>
+      <span class="news-date">YYYY.MM.DD</span>
+      <div class="news-content">
+        <div class="news-tag">PUBLICATION</div>
+        <div class="news-title-jp">記事タイトルを日本語で入力してください</div>
+        <div class="news-title-en">Article title in English</div>
+      </div>
+      <span class="news-arrow">→</span>
+    </div>
+
   </div>
 </section>
 
-<!-- Company -->
-<section id="company" class="reveal">
-  <div class="section-label" data-num="08">Company</div>
-  <h2 class="section-heading" style="color:var(--white)">Company Overview</h2>
-  <div class="company-grid">
-    <div class="company-info">
-      <table>
-        <tr><td>事務所名</td><td>ATELIER 建築設計事務所</td></tr>
-        <tr><td>設立</td><td>2012年4月</td></tr>
-        <tr><td>代表</td><td>田中 雪 / Yuki Tanaka</td></tr>
-        <tr><td>スタッフ</td><td>建築家6名・スタッフ3名（2024年現在）</td></tr>
-        <tr><td>資格</td><td>一級建築士事務所 東京都知事登録（第12345号）</td></tr>
-        <tr><td>所在地</td><td>東京都渋谷区神宮前3-XX-XX<br>ATELIER Bldg. 2F</td></tr>
-        <tr><td>TEL</td><td>03-XXXX-XXXX</td></tr>
-        <tr><td>MAIL</td><td>info@atelier-arch.jp</td></tr>
-        <tr><td>SNS</td><td>@atelier_arch</td></tr>
-      </table>
-    </div>
-    <div class="company-map">
-      <img src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80" alt="Location">
-      <div class="company-address">
-        〒150-0001<br>
-        東京都渋谷区神宮前3-XX-XX<br>
-        表参道駅 徒歩5分
-      </div>
+
+<!-- ══════════════════════════════════════════
+  04 ABOUT — Profile + Vision + Awards
+══════════════════════════════════════════ -->
+<section id="about" class="sec toned reveal">
+  <div class="sec-head">
+    <div class="sec-num">04</div>
+    <div class="sec-title-en">About</div>
+    <div class="sec-title-jp">事務所について</div>
+    <div class="sec-lead">
+      <!-- ↓ リード文を変更 -->
+      <p class="sec-lead-jp">Studio Yutaka Architectsは2024年に設立された建築設計事務所です。住宅から文化施設まで、様々なスケールのプロジェクトを手がけます。</p>
+      <p class="sec-lead-en">Studio Yutaka Architects is a practice founded in 2024, working across residential to cultural scales.</p>
     </div>
   </div>
-</section>
 
-<!-- Articles -->
-<section id="articles" class="reveal">
-  <div class="section-label" data-num="09">Articles</div>
-  <h2 class="section-heading">News &amp; Articles</h2>
-  <div class="articles-grid">
-    <div class="article-featured">
-      <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=900&q=80" alt="">
-      <div class="article-featured-info">
-        <p class="article-featured-tag">ESSAY — 設計論</p>
-        <h3 class="article-featured-title">「空白を設計する」——余白から生まれる建築の可能性について</h3>
-        <p class="article-featured-date">2024.11.15</p>
-      </div>
+  <!-- Profile -->
+  <div class="profile-grid">
+    <div class="portrait-wrap">
+      <!-- ↓ <img src="portrait.jpg" alt=""> に置き換え -->
+      <div class="ph portrait-ph">プロフィール写真を挿入<br>Insert portrait</div>
+      <div class="portrait-cap-jp">代表建築家</div>
+      <div class="portrait-cap-en">Principal Architect</div>
     </div>
-    <div class="articles-side">
-      <div class="article-small">
-        <img src="https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=200&q=80" alt="">
-        <div class="article-small-info">
-          <p class="article-small-tag">NEWS</p>
-          <h4 class="article-small-title">「光の家」がグッドデザイン金賞を受賞</h4>
-          <p class="article-small-date">2024.10.30</p>
+    <div>
+      <div class="prof-name-jp">齋藤 裕</div><!-- ↓ 名前を変更 -->
+      <div class="prof-name-en">Yutaka Saito</div><!-- ↓ -->
+      <!-- ↓ 自己紹介文（日本語・英語）を変更 -->
+      <p class="prof-bio-jp">信州大学大学院総合理工学研究科建築学専攻修了後、アトリエ系建築設計事務所（東京）にて4年間の実務を積む。美術関係施設の設計を得意とするアトリエでの経験を経て、世界の建築のあり方を探求するため渡航。2024年にStudio Yutaka Architectsを設立。「Bio-Archipilia」をテーマに、住宅から文化施設まで幅広いプロジェクトを手がける。</p>
+      <p class="prof-bio-en">After completing a Master's degree at Shinshu University, Saito worked four years at an atelier in Tokyo, then internationally before founding Studio Yutaka Architects in 2024.</p>
+
+      <!-- ↓ 学歴を変更 -->
+      <div class="cv-block">
+        <div class="cv-head"><span>学歴</span><span>Education</span></div>
+        <div class="cv-row">
+          <span class="cv-yr">20XX</span>
+          <span class="cv-jp"><strong>信州大学</strong> 工学部建築学科 学士</span>
+          <span class="cv-en">Shinshu University, B.Arch.</span>
+        </div>
+        <div class="cv-row">
+          <span class="cv-yr">20XX</span>
+          <span class="cv-jp"><strong>信州大学大学院</strong> 総合理工学研究科 修士</span>
+          <span class="cv-en">Shinshu University Grad. School, M.Arch.</span>
         </div>
       </div>
-      <div class="article-small">
-        <img src="https://images.unsplash.com/photo-1481277542470-605612bd2d61?w=200&q=80" alt="">
-        <div class="article-small-info">
-          <p class="article-small-tag">INTERVIEW</p>
-          <h4 class="article-small-title">新建築インタビュー「素材と記憶」田中雪 × 編集長対談</h4>
-          <p class="article-small-date">2024.09.01</p>
+
+      <!-- ↓ 職歴を変更 -->
+      <div class="cv-block">
+        <div class="cv-head"><span>経歴</span><span>Experience</span></div>
+        <div class="cv-row">
+          <span class="cv-yr">20XX–XX</span>
+          <span class="cv-jp"><strong>アトリエ系建築設計事務所</strong>（東京）</span>
+          <span class="cv-en">Atelier Architecture Office, Tokyo</span>
+        </div>
+        <div class="cv-row">
+          <span class="cv-yr">20XX–XX</span>
+          <span class="cv-jp"><strong>MoIT</strong> プロジェクト建築家（ブータン）</span>
+          <span class="cv-en">MoIT, Project Architect, Bhutan</span>
+        </div>
+        <div class="cv-row">
+          <span class="cv-yr">2024–</span>
+          <span class="cv-jp"><strong>Studio Yutaka Architects</strong> 代表</span>
+          <span class="cv-en">Studio Yutaka Architects, Principal</span>
         </div>
       </div>
-      <div class="article-small">
-        <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=200&q=80" alt="">
-        <div class="article-small-info">
-          <p class="article-small-tag">LECTURE</p>
-          <h4 class="article-small-title">東京大学 公開講座「日本の現代住宅と身体性」登壇</h4>
-          <p class="article-small-date">2024.07.12</p>
-        </div>
-      </div>
-      <div class="article-small">
-        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=200&q=80" alt="">
-        <div class="article-small-info">
-          <p class="article-small-tag">PUBLICATION</p>
-          <h4 class="article-small-title">書籍「余白の建築学」出版（TOTO出版）</h4>
-          <p class="article-small-date">2024.04.05</p>
+
+      <!-- ↓ Teaching（なければ削除） -->
+      <div class="cv-block">
+        <div class="cv-head"><span>教育・講演</span><span>Teaching / Lectures</span></div>
+        <div class="cv-row">
+          <span class="cv-yr">20XX</span>
+          <span class="cv-jp">情報を入力（なければこのブロックを削除）</span>
+          <span class="cv-en">Enter or delete this block</span>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Vision -->
+  <div class="vision-wrap">
+    <div class="vision-titles">
+      <div class="vtitle-jp">ビジョン</div><!-- ↓ -->
+      <div class="vtitle-en">Vision</div>
+    </div>
+    <div class="vision-body">
+      <div>
+        <!-- ↓ 引用文（日本語）を変更 -->
+        <p class="vquote-jp">「建築とは、時間をかけて生まれる詩である。素材が風化し、光が移ろい、人が通り過ぎる——その全てを設計に織り込むことが、私たちの仕事です。」</p>
+        <div class="vcite">— Yutaka Saito, 2024</div>
+      </div>
+      <div>
+        <!-- ↓ 引用文（英語）を変更 -->
+        <p class="vquote-en">"Architecture is a poem that emerges over time. Materials weather, light shifts, people pass through — our work is to weave all of this into design."</p>
+      </div>
+    </div>
+    <div class="pillars">
+      <!-- ↓ 各柱を変更 -->
+      <div class="pillar">
+        <h4>素材の誠実性<span class="en">Material Honesty</span></h4>
+        <p class="pjp">素材はそれ自体が持つ固有の性質を正直に表現するべきだと考えます。</p>
+        <p class="pen">Materials must honestly express their inherent nature.</p>
+      </div>
+      <div class="pillar">
+        <h4>詩の空間学<span class="en">Poetics of Space</span></h4>
+        <p class="pjp">光は設計の主役です。光を「招く」ことで、居住者は自然の時間軸と繋がります。</p>
+        <p class="pen">Light is the protagonist — invited, not controlled.</p>
+      </div>
+      <div class="pillar">
+        <h4>文脈との対話<span class="en">Contextual Dialogue</span></h4>
+        <p class="pjp">建築は孤立して存在しません。謙虚に場所の声を聴くことから始めます。</p>
+        <p class="pen">Every design begins by listening to the voice of its place.</p>
+      </div>
+      <div class="pillar">
+        <h4>余白の設計<span class="en">Designed Margins</span></h4>
+        <p class="pjp">完成した建物は、居住者が自分の生活を投影する「余白」を持つべきです。</p>
+        <p class="pen">Spaces that leave room for inhabitants to grow into.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Awards -->
+  <div class="awards-wrap">
+    <div class="block-title">
+      <div class="bt-jp">受賞歴・掲載歴</div><!-- ↓ -->
+      <div class="bt-en">Awards &amp; Publications</div>
+    </div>
+    <!-- ↓ 行をコピーして追加できます -->
+    <div class="award-row">
+      <span class="ayr">20XX</span>
+      <span class="ajp">受賞名・掲載名（日本語）</span>
+      <span class="aen">Award / Publication (EN)</span>
+      <span class="aorg">主催団体 / Organizer</span>
+    </div>
+    <div class="award-row">
+      <span class="ayr">20XX</span>
+      <span class="ajp">受賞名・掲載名（日本語）</span>
+      <span class="aen">Award / Publication (EN)</span>
+      <span class="aorg">主催団体 / Organizer</span>
+    </div>
+    <div class="award-row">
+      <span class="ayr">20XX</span>
+      <span class="ajp">受賞名・掲載名（日本語）</span>
+      <span class="aen">Award / Publication (EN)</span>
+      <span class="aorg">主催団体 / Organizer</span>
+    </div>
+  </div>
+
 </section>
 
-<!-- Footer -->
+
+<!-- ══════════════════════════════════════════
+  05 CONTACT — Company + Flow + Form
+══════════════════════════════════════════ -->
+<section id="contact" class="sec toned">
+
+  <div class="sec-head">
+    <div class="sec-num">05</div>
+    <div class="sec-title-en">Contact</div>
+    <div class="sec-title-jp">お問い合わせ</div>
+  </div>
+
+  <!-- COMPANY -->
+  <div class="co-wrap">
+    <div class="block-title" style="margin-bottom:28px;">
+      <div class="bt-jp" style="color:rgba(255,255,255,0.85)">会社概要</div>
+      <div class="bt-en">Company</div>
+    </div>
+    <div class="co-grid">
+      <div>
+        <table class="co-table">
+          <!-- ↓ 右列を変更してください -->
+          <tr><td>NAME</td><td><span class="co-jp">Studio Yutaka Architects</span><span class="co-en">スタジオ ユタカ アーキテクツ</span></td></tr>
+          <tr><td>FOUNDED</td><td><span class="co-jp">2024年設立</span><span class="co-en">Established 2024</span></td></tr>
+          <tr><td>PRINCIPAL</td><td><span class="co-jp">齋藤 裕</span><span class="co-en">Yutaka Saito</span></td></tr>
+          <tr><td>STAFF</td><td><span class="co-jp">人数を入力</span><span class="co-en">Enter number</span></td></tr>
+          <tr><td>LICENSE</td><td><span class="co-jp">一級建築士事務所 ○○県知事登録 第XXXXX号</span></td></tr>
+          <tr><td>ADDRESS</td><td><span class="co-jp">住所を入力</span><span class="co-en">Enter address</span></td></tr>
+          <tr><td>TEL</td><td><span class="co-jp">電話番号を入力</span></td></tr>
+          <tr><td>MAIL</td><td><span class="co-jp"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5d2432282f1d38303c3431733e3230">[email&#160;protected]</a></span></td></tr>
+          <tr><td>SNS</td><td><span class="co-jp">@アカウント名</span><span class="co-en">@handle</span></td></tr>
+        </table>
+      </div>
+      <div>
+        <!-- ↓ <img src="map.jpg" alt=""> に置き換え -->
+        <div class="ph co-map-ph">地図または外観写真を挿入<br>Insert map or exterior</div>
+        <div class="co-addr-jp">〒XXX-XXXX 住所を入力<br>最寄り駅 徒歩XX分</div><!-- ↓ -->
+        <div class="co-addr-en">Address line 1, Nearest station, X min walk</div><!-- ↓ -->
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOW -->
+  <div class="flow-wrap">
+    <div class="block-title" style="margin-bottom:28px;">
+      <div class="bt-jp" style="color:rgba(255,255,255,0.85)">設計フロー</div>
+      <div class="bt-en">Flow</div>
+    </div>
+    <!-- ↓ リード文を変更 -->
+    <p style="font-family:var(--jp);font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:32px;line-height:2;">初回のヒアリングから竣工まで、私たちの設計プロセスをご紹介します。</p>
+    <div class="flow-grid">
+
+      <div class="flow-step">
+        <!-- ↓ <img src="flow1.jpg" alt=""> に置き換え -->
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">01</div>
+          <div class="ftitle-jp">ヒアリング</div><!-- ↓ -->
+          <div class="ftitle-en">Listening</div><!-- ↓ -->
+          <p class="fdesc-jp">クライアントの言葉の奥にある本当の願いを聴き取ることから始まります。</p><!-- ↓ -->
+          <p class="fdesc-en">Listening to what the client truly wants.</p><!-- ↓ -->
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">02</div>
+          <div class="ftitle-jp">調査・分析</div>
+          <div class="ftitle-en">Research</div>
+          <p class="fdesc-jp">敷地調査、法規確認、周辺環境の読み解き。</p>
+          <p class="fdesc-en">Site survey, building code and environment.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">03</div>
+          <div class="ftitle-jp">コンセプト</div>
+          <div class="ftitle-en">Concept</div>
+          <p class="fdesc-jp">核となるアイデアをスケッチと模型で検証します。</p>
+          <p class="fdesc-en">Finding the core idea through sketches and models.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">04</div>
+          <div class="ftitle-jp">設計</div>
+          <div class="ftitle-en">Design</div>
+          <p class="fdesc-jp">基本設計から実施設計へ。細部の納まりまで追求します。</p>
+          <p class="fdesc-en">From schematic to construction documents.</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">05</div>
+          <div class="ftitle-jp">工事監理</div>
+          <div class="ftitle-en">Supervision</div>
+          <p class="fdesc-jp">現場に立ち会い、職人との対話を通じて設計意図を移植します。</p>
+          <p class="fdesc-en">On-site dialogue with craftspeople.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MAIL FORM -->
+  <div class="form-wrap">
+    <div class="block-title" style="margin-bottom:28px;">
+      <div class="bt-jp" style="color:rgba(255,255,255,0.85)">お問い合わせフォーム</div>
+      <div class="bt-en">Enquiry Form</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-left">
+        <p class="flead-jp">設計のご依頼・ご相談・メディア掲載など、お気軽にご連絡ください。通常3営業日以内にご返信いたします。</p>
+        <p class="flead-en">For project enquiries, collaborations, or media. We respond within 3 business days.</p>
+      </div>
+      <div class="form-right">
+        <!-- ↓ action属性にFormspreeのURLを入力（例: https://formspree.io/f/XXXXXXXX） -->
+        <form action="#" method="POST">
+          <div class="form-field">
+            <label>お名前 <span class="en">NAME</span></label>
+            <input type="text" name="name" placeholder="例: 齋藤 裕" required>
+          </div>
+          <div class="form-field">
+            <label>メールアドレス <span class="en">EMAIL</span></label>
+            <input type="email" name="email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-field">
+            <label>お問い合わせ種別 <span class="en">TYPE</span></label>
+            <select name="type">
+              <option value="">選択してください / Select</option>
+              <option value="project">設計依頼 / Project Enquiry</option>
+              <option value="collaboration">コラボレーション / Collaboration</option>
+              <option value="media">メディア掲載 / Media</option>
+              <option value="other">その他 / Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>メッセージ <span class="en">MESSAGE</span></label>
+            <textarea name="message" placeholder="ご依頼の概要をお聞かせください..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">送信する / Send</button>
+          <p class="form-note">送信いただいた情報は設計業務の対応のみに使用します。<br>Your information will only be used to respond to your enquiry.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════
+  FOOTER  ↓ テキストを変更
+══════════════════════════════════════════ -->
 <footer>
   <div>
-    <span class="footer-logo">ATELIER</span>
-    <p class="footer-tagline">空間と記憶が交差する場所で、<br>時を超える建築を。</p>
+    <a href="#works" class="nav-logo ft-logo">
+      <span class="logo-studio">STUDIO&nbsp;</span>
+      <span class="logo-yutaka">YUTAKA</span>
+      <span class="logo-arch">&nbsp;ARCHITECTS</span>
+    </a>
+    <!-- ↓ フッターコピーを変更 -->
+    <p class="ft-tag-jp">東京を拠点とする建築設計事務所 — 2024年設立</p>
+    <p class="ft-tag-en">Architecture practice, Tokyo — Est. 2024</p>
   </div>
-  <div class="footer-col">
+  <div class="ft-col">
     <h4>Navigation</h4>
     <ul>
-      <li><a href="#projects">Works</a></li>
-      <li><a href="#drawings">図面</a></li>
-      <li><a href="#profile">Profile</a></li>
-      <li><a href="#philosophy">Philosophy</a></li>
-      <li><a href="#workflow">Process</a></li>
-      <li><a href="#awards">Awards</a></li>
-      <li><a href="#products">Products</a></li>
-      <li><a href="#company">Company</a></li>
-      <li><a href="#articles">Articles</a></li>
+      <li><a href="#works">Works</a></li>
+      <li><a href="#news">News</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
     </ul>
   </div>
-  <div class="footer-col">
+  <div class="ft-col">
     <h4>Contact</h4>
     <ul>
-      <li><a href="mailto:info@atelier-arch.jp">info@atelier-arch.jp</a></li>
-      <li><a href="#">Instagram</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#5a23352f281a3f373b333674393537"><span class="__cf_email__" data-cfemail="ea93859f98aa8f878b8386c4898587">[email&#160;protected]</span></a></li><!-- ↓ -->
+      <li><a href="#">Instagram</a></li><!-- ↓ URLを入力 -->
       <li><a href="#">LinkedIn</a></li>
     </ul>
   </div>
-  <div class="footer-bottom">
-    <span>© 2024 ATELIER 建築設計事務所. All rights reserved.</span>
+  <div class="ft-bottom">
+    <span>© 2024 Studio Yutaka Architects. All rights reserved.</span><!-- ↓ -->
     <span>Tokyo, Japan</span>
   </div>
 </footer>
 
-<script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
-  document.querySelectorAll('a, button, .project-card, .product-card, .article-featured, .article-small').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-  });
 
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* scroll reveal */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});
+},{threshold:0.05});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-  // Project Modal
-  const projects = {};
-  function openModal(data) {
-    const modal = document.getElementById('modal');
-    document.getElementById('modal-tag').textContent = data.tag;
-    document.getElementById('modal-title').textContent = data.title;
-    document.getElementById('modal-desc').textContent = data.desc;
-    document.getElementById('modal-meta').innerHTML = `
-      <div class="modal-meta-item"><label>YEAR</label><span>${data.year}</span></div>
-      <div class="modal-meta-item"><label>LOCATION</label><span>${data.location}</span></div>
-      <div class="modal-meta-item"><label>AREA</label><span>${data.area}</span></div>
-      <div class="modal-meta-item"><label>TYPE</label><span>${data.tag}</span></div>
-    `;
-    const mainImg = document.getElementById('modal-main-img');
-    mainImg.src = data.imgs[0];
-    const thumbs = document.getElementById('modal-thumbs');
-    thumbs.innerHTML = '';
-    data.imgs.forEach((src, i) => {
-      const img = document.createElement('img');
-      img.src = src;
-      if (i === 0) img.classList.add('active');
-      img.onclick = () => {
-        mainImg.src = src;
-        thumbs.querySelectorAll('img').forEach(t => t.classList.remove('active'));
-        img.classList.add('active');
-      };
-      thumbs.appendChild(img);
-    });
-    modal.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal(e) {
-    if (e.target === document.getElementById('modal')) {
-      document.getElementById('modal').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-  }
-  document.querySelector('.modal-close').addEventListener('click', () => {
-    document.getElementById('modal').classList.remove('open');
-    document.body.style.overflow = '';
-  });
-
-  // Nav scroll shrink
-  window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    nav.style.padding = window.scrollY > 50 ? '14px 48px' : '24px 48px';
-  });
-</script>
-</body>
-</html>
+/* modal */
+function openModal(d){
+  document.getElementById('m-type').textContent  = d.type||'';
+  document.getElementById('m-name-jp').textContent= d.nameJp||'';
+  document.getElementById('m-name-en').textContent= d.nameEn||'';
+  document.getElementById('m-desc-jp').textContent= d.descJp||'';
+  document.getElementById('m-desc-en').textContent= d.descEn||'';
+  document.getElementById('m-meta').innerHTML=`
+    <div class="modal-meta-item"><label>YEAR</label><span>${d.year||''}</span></div>
+    <div class="modal-meta-item"><label>LOCATION</label><span>${d.loc||''}</span></div>
+    <div class="modal-meta-item"><label>AREA</label><span>${d.area||''}</span></div>
+    <div class="modal-meta-item"><label>TYPE</label><span>${d.type||''}</span></div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  do
