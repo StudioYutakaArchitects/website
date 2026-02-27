@@ -92,36 +92,62 @@ nav{
 
 
 /* ══════════════════════════════
-   CUSTOM CURSOR (黄緑・十字)
+   CUSTOM CURSOR
 ══════════════════════════════ */
-body{cursor:none;}
-.cur{
-  position:fixed;top:0;left:0;
-  pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-  transition:transform 0.08s ease;
+html, body { cursor: none; }
+a, button, [onclick], .work-item, .prod-card, .news-row,
+.nav-link, .nav-logo, .form-submit, .modal-nav button,
+input, select, textarea { cursor: none; }
+
+#cur {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  top: 0; left: 0;
+  /* Positioned directly by JS — no transform offset */
+  display: block;
 }
-.cur-ring{
-  width:20px;height:20px;
-  border:2px solid var(--green);
-  border-radius:50%;
-  position:relative;
-  transition:width 0.2s,height 0.2s,opacity 0.2s;
+/* outer ring */
+#cur-ring {
+  position: absolute;
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--green);
+  border-radius: 50%;
+  /* centered around origin */
+  transform: translate(-50%, -50%);
+  transition: width .2s, height .2s;
 }
-.cur-ring::before,.cur-ring::after{
-  content:'';position:absolute;background:var(--green);
+/* crosshair arms */
+#cur-ring::before, #cur-ring::after {
+  content: ''; position: absolute; background: var(--green);
 }
-.cur-ring::before{width:1px;height:8px;left:50%;top:-9px;transform:translateX(-50%);}
-.cur-ring::after{width:8px;height:1px;top:50%;left:-9px;transform:translateY(-50%);}
-.cur-dot{
-  width:4px;height:4px;
-  border-radius:50%;
-  background:var(--green);
-  position:absolute;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
+#cur-ring::before { width: 1px; height: 9px; left: 50%; top: -10px; transform: translateX(-50%); }
+#cur-ring::after  { width: 9px; height: 1px; top: 50%;  left: -10px; transform: translateY(-50%); }
+/* center dot */
+#cur-dot-inner {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: var(--green);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
-body.cur-hover .cur-ring{width:36px;height:36px;opacity:0.6;}
+body.cur-big #cur-ring { width: 44px; height: 44px; opacity: .65; }
+
+/* floating preview image on WORKS hover */
+#cur-preview {
+  position: fixed;
+  width: 240px; aspect-ratio: 4/3;
+  pointer-events: none;
+  z-index: 99998;
+  opacity: 0;
+  transition: opacity .18s;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--light);
+  top: 0; left: 0;
+}
+#cur-preview img, #cur-preview .ph { width:100%; height:100%; object-fit:cover; }
+body.work-preview #cur-preview { opacity: 1; }
 
 /* ══════════════════════════════
    MODAL
@@ -134,13 +160,26 @@ body.cur-hover .cur-ring{width:36px;height:36px;opacity:0.6;}
 }
 .modal-bg.open{display:flex;}
 .modal-box{
-  background:var(--white);max-width:960px;width:100%;
-  max-height:88vh;overflow-y:auto;
-  display:grid;grid-template-columns:1fr 1fr;
+  background:var(--white);max-width:1100px;width:100%;
+  max-height:90vh;overflow:hidden;
+  display:grid;grid-template-columns:55% 1fr;
 }
-.modal-img-area{background:var(--light);}
-.modal-img-area .ph{height:100%;min-height:360px;}
-.modal-body{padding:40px 36px;display:flex;flex-direction:column;gap:14px;}
+.modal-left{display:flex;flex-direction:column;background:var(--light);}
+.modal-slides{flex:1;overflow:hidden;position:relative;min-height:320px;}
+.modal-slide{position:absolute;inset:0;opacity:0;transition:opacity .35s;}
+.modal-slide.active{opacity:1;}
+.modal-slide .ph,.modal-slide img{width:100%;height:100%;object-fit:cover;}
+.modal-nav{display:flex;gap:6px;padding:12px 16px;border-top:1px solid var(--border);}
+.modal-nav button{
+  width:28px;height:28px;border:1px solid var(--border);background:var(--white);
+  font-family:var(--mono);font-size:10px;cursor:none;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.modal-nav button.active,.modal-nav button:hover{background:var(--black);color:var(--white);border-color:var(--black);}
+.modal-body{padding:36px 32px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;max-height:90vh;}
+.modal-extra{margin-top:8px;padding-top:12px;border-top:1px solid var(--border);}
+.modal-extra p{font-family:var(--jp);font-size:12px;line-height:2;color:var(--mid);}
 .modal-type{font-family:var(--mono);font-size:9px;letter-spacing:0.2em;color:var(--gray);}
 .m-name-jp{font-family:var(--jp);font-size:22px;font-weight:400;line-height:1.25;margin-bottom:1px;}
 .m-name-en{font-family:var(--en);font-size:13px;color:var(--gray);font-weight:300;}
@@ -213,22 +252,10 @@ body.cur-hover .cur-ring{width:36px;height:36px;opacity:0.6;}
   width:100%;height:100%;
   transition:transform 0.6s ease;
 }
-.work-item:hover .work-img img{transform:scale(1.03);}
 
-/* ホバーオーバーレイ — 写真の上だけ */
+
 .work-img-inner{position:relative;height:100%;}
-.work-caption{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:20px 24px;
-  background:linear-gradient(to top, rgba(139,191,78,0.18) 0%, transparent 45%);
-  opacity:0;transition:opacity 0.28s;
-  pointer-events:none;
-}
-.work-item:hover .work-caption{opacity:1;}
-.cap-jp{font-family:var(--jp);font-size:15px;font-weight:500;color:var(--black);margin-bottom:3px;}
-.cap-en{font-family:var(--en);font-size:11px;color:var(--mid);}
-.cap-meta{font-family:var(--mono);font-size:9px;color:var(--mid);letter-spacing:0.08em;margin-top:5px;}
+/* no hover overlay — preview image follows cursor instead */
 
 /* 右側テキストエリア */
 .work-text{
@@ -478,21 +505,57 @@ body.cur-hover .cur-ring{width:36px;height:36px;opacity:0.6;}
 }
 .sns-card:hover{background:var(--off);}
 .sns-icon{
-  width:44px;height:44px;
-  border-radius:10px;
+  width:40px;height:40px;
+  border:1px solid var(--border);
+  border-radius:6px;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-size:16px;font-weight:700;
-  color:var(--white);flex-shrink:0;
+  flex-shrink:0;
+  color:var(--gray);
+  background:var(--white);
+  transition:border-color .2s,color .2s;
 }
-.sns-note{background:#41C9B4;}
-.sns-ig{background:linear-gradient(135deg,#F58529,#DD2A7B,#8134AF);}
-.sns-fb{background:#1877F2;}
-.sns-li{background:#0A66C2;font-size:14px;}
+.sns-card:hover .sns-icon{border-color:var(--black);color:var(--black);}
+.sns-note,.sns-ig,.sns-fb,.sns-li{background:var(--white);}
 .sns-body{}
 .sns-name{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;color:var(--gray);margin-bottom:2px;}
 .sns-handle{font-size:13px;font-weight:400;margin-bottom:3px;}
 .sns-desc{font-family:var(--jp);font-size:11px;color:var(--gray);line-height:1.6;}
 .sns-arrow{font-family:var(--mono);font-size:11px;color:var(--gray);}
+
+
+/* ══════════════════════════════
+   PRODUCTS CAROUSEL
+══════════════════════════════ */
+.prod-carousel-wrap{position:relative;overflow:hidden;}
+.prod-carousel-track{
+  display:flex;
+  gap:32px;
+  transition:transform .45s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+.prod-carousel-track .prod-card{
+  flex:0 0 calc((100% - 64px) / 3);
+  min-width:0;
+}
+.prod-arrow{
+  position:absolute;top:0;bottom:0;width:72px;
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;background:none;border:none;
+  color:var(--black);
+  font-family:var(--mono);font-size:20px;
+  opacity:0;transition:opacity .2s;
+  cursor:none;
+}
+.prod-arrow-left{left:0;background:linear-gradient(to right,rgba(246,245,243,.9) 0%,transparent 100%);}
+.prod-arrow-right{right:0;background:linear-gradient(to left,rgba(246,245,243,.9) 0%,transparent 100%);}
+.prod-carousel-wrap:hover .prod-arrow{opacity:1;}
+.prod-dots{display:flex;justify-content:center;gap:6px;margin-top:20px;}
+.prod-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--border);
+  border:none;cursor:none;padding:0;
+  transition:background .2s;
+}
+.prod-dot.active{background:var(--black);}
 
 /* ══════════════════════════════
    FOOTER
@@ -554,13 +617,21 @@ footer{
 <body>
 
 <!-- ══ CUSTOM CURSOR ══ -->
-<div class="cur" id="cur"><div class="cur-ring"><div class="cur-dot"></div></div></div>
+<div id="cur"><div id="cur-ring"></div><div id="cur-dot-inner"></div></div>
+<div id="cur-preview"><div class="ph" style="font-size:9px;letter-spacing:.08em;">DIAGRAM / SUB IMAGE</div></div>
 
 <!-- ══════ MODAL ══════ -->
 <div class="modal-bg" id="modal" onclick="handleModalClick(event)">
   <button class="modal-x" id="modal-x">✕</button>
   <div class="modal-box">
-    <div class="modal-img-area"><div class="ph" id="modal-img">写真を挿入 / Insert photo</div></div>
+    <!-- 左: 画像スライダー -->
+    <div class="modal-left">
+      <div class="modal-slides" id="modal-slides">
+        <!-- JS で画像を挿入 -->
+      </div>
+      <div class="modal-nav" id="modal-nav"></div>
+    </div>
+    <!-- 右: テキスト -->
     <div class="modal-body">
       <div class="modal-type" id="m-type"></div>
       <div class="m-name-jp" id="m-name-jp"></div>
@@ -568,6 +639,8 @@ footer{
       <div class="modal-meta" id="m-meta"></div>
       <p class="m-desc-jp" id="m-desc-jp"></p>
       <p class="m-desc-en" id="m-desc-en"></p>
+      <!-- 追加テキストエリア -->
+      <div class="modal-extra" id="m-extra"></div>
     </div>
   </div>
 </div>
@@ -585,7 +658,7 @@ footer{
   <div class="nav-right">
     <a href="#works"   class="nav-link">Works</a>
     <a href="#news"    class="nav-link">News</a>
-    <a href="#about"   class="nav-link">About</a>
+    <a href="#about" class="nav-link">About</a>
     <a href="#contact" class="nav-link">Contact</a>
   </div>
 </nav>
@@ -593,22 +666,34 @@ footer{
 
 <!-- ══════════════════════════════════════════
   01 WORKS — 縦一列・大きく
-  ↓ openModal({...}) 内と hover テキストを編集
+  ↓ openModal({...,
+        extra: "",
+        images: ["", "", ""]
+      }} 内と hover テキストを編集
 ══════════════════════════════════════════ -->
 <section id="works" style="padding-top:72px;">
   <div class="works-list">
 
     <!-- ▼ Work 1 -->
-    <div class="work-item" onclick='openModal({
-      type:   "住宅 / Residential",
-      nameJp: "プロジェクト名（日本語）",
-      nameEn: "Project Name (EN)",
-      year:   "20XX",
-      loc:    "場所を入力",
-      area:   "面積を入力",
-      descJp: "プロジェクトの説明を日本語で入力してください。",
-      descEn: "Describe the project in English."
-    })'>
+    <!-- data-preview: ホバー時に表示するサブ画像（ダイアグラム等）のURL ↓ -->
+    <div class="work-item"
+      data-preview=""
+      onclick='openModal({
+        type:   "住宅 / Residential",
+        nameJp: "プロジェクト名（日本語）",
+        nameEn: "Project Name (EN)",
+        year:   "20XX",
+        loc:    "場所を入力",
+        area:   "面積を入力",
+        descJp: "プロジェクトの説明を日本語で入力してください。",
+        descEn: "Describe the project in English.",
+        extra:  "追加テキストや備考を入力（HTMLも可）",
+        images: [
+          "",
+          "",
+          ""
+        ]
+      }'>
       <div class="work-img"><!-- ↓ グリッド列2: 写真エリア -->
         <div class="work-img-inner">
           <!-- ↓ <img src="works1.jpg" alt=""> に置き換え（推奨: 横長・高解像度） -->
@@ -630,7 +715,10 @@ footer{
     </div>
 
     <!-- ▼ Work 2 -->
-    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+    <div class="work-item" data-preview="" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:"",
+        extra: "",
+        images: ["", "", ""]
+      }}'>
       <div class="work-img"><div class="work-img-inner">
           <div class="ph">写真を挿入 / Insert photo</div>
           <div class="work-caption"><div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div></div>
@@ -644,7 +732,10 @@ footer{
     </div>
 
     <!-- ▼ Work 3 -->
-    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+    <div class="work-item" data-preview="" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:"",
+        extra: "",
+        images: ["", "", ""]
+      }}'>
       <div class="work-img"><div class="work-img-inner">
           <div class="ph">写真を挿入 / Insert photo</div>
           <div class="work-caption"><div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div></div>
@@ -658,7 +749,10 @@ footer{
     </div>
 
     <!-- ▼ Work 4 -->
-    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+    <div class="work-item" data-preview="" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:"",
+        extra: "",
+        images: ["", "", ""]
+      }}'>
       <div class="work-img"><div class="work-img-inner">
           <div class="ph">写真を挿入 / Insert photo</div>
           <div class="work-caption"><div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div></div>
@@ -672,7 +766,10 @@ footer{
     </div>
 
     <!-- ▼ Work 5 （不要なら削除） -->
-    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:""})'>
+    <div class="work-item" onclick='openModal({type:"",nameJp:"",nameEn:"",year:"",loc:"",area:"",descJp:"",descEn:"",
+        extra: "",
+        images: ["", "", ""]
+      }}'>
       <div class="work-img"><div class="work-img-inner">
           <div class="ph">写真を挿入 / Insert photo</div>
           <div class="work-caption"><div class="cap-jp">プロジェクト名</div><div class="cap-en">Project Name</div><div class="cap-meta">TYPE — YEAR — LOCATION</div></div>
@@ -702,7 +799,10 @@ footer{
       <p class="sec-lead-en">Furniture, materials and lighting developed with craftspeople.</p>
     </div>
   </div>
-  <div class="prod-grid">
+  <div class="prod-carousel-wrap" id="prod-carousel">
+    <button class="prod-arrow prod-arrow-left" id="prod-prev" aria-label="前へ">&#8592;</button>
+    <button class="prod-arrow prod-arrow-right" id="prod-next" aria-label="次へ">&#8594;</button>
+    <div class="prod-carousel-track" id="prod-track">
 
     <div class="prod-card">
       <!-- ↓ <img src="product1.jpg" alt=""> に置き換え -->
@@ -738,7 +838,47 @@ footer{
       </div>
     </div>
 
-  </div>
+      </div><!-- close prod-card 3 -->
+
+      <!-- ↓ CARD 4 — カーソルを右に寄せると表示されます -->
+      <div class="prod-card">
+        <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+        <div class="prod-body">
+          <div class="prod-name-jp">プロダクト名（日本語）</div>
+          <div class="prod-name-en">Product Name (EN)</div>
+          <p class="prod-desc-jp">説明文を入力してください。</p>
+          <p class="prod-desc-en">Describe the product in English.</p>
+          <span class="prod-tag">CATEGORY</span>
+        </div>
+      </div>
+
+      <!-- ↓ CARD 5 -->
+      <div class="prod-card">
+        <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+        <div class="prod-body">
+          <div class="prod-name-jp">プロダクト名（日本語）</div>
+          <div class="prod-name-en">Product Name (EN)</div>
+          <p class="prod-desc-jp">説明文を入力してください。</p>
+          <p class="prod-desc-en">Describe the product in English.</p>
+          <span class="prod-tag">CATEGORY</span>
+        </div>
+      </div>
+
+      <!-- ↓ CARD 6 -->
+      <div class="prod-card">
+        <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
+        <div class="prod-body">
+          <div class="prod-name-jp">プロダクト名（日本語）</div>
+          <div class="prod-name-en">Product Name (EN)</div>
+          <p class="prod-desc-jp">説明文を入力してください。</p>
+          <p class="prod-desc-en">Describe the product in English.</p>
+          <span class="prod-tag">CATEGORY</span>
+        </div>
+      </div>
+
+    </div><!-- /prod-carousel-track -->
+    <div class="prod-dots" id="prod-dots"></div>
+  </div><!-- /prod-carousel-wrap -->
 </section>
 
 
@@ -843,7 +983,7 @@ footer{
 
       <!-- ↓ 学歴を変更 -->
       <div class="cv-block">
-        <div class="cv-head"><span>学歴</span><span>Education</span></div>
+        <div class="cv-head"><span>Education</span><span>Education</span></div>
         <div class="cv-row">
           <span class="cv-yr">20XX</span>
           <span class="cv-jp"><strong>信州大学</strong> 工学部建築学科 学士</span>
@@ -858,7 +998,7 @@ footer{
 
       <!-- ↓ 職歴を変更 -->
       <div class="cv-block">
-        <div class="cv-head"><span>経歴</span><span>Experience</span></div>
+        <div class="cv-head"><span>Experience</span><span>Experience</span></div>
         <div class="cv-row">
           <span class="cv-yr">20XX–XX</span>
           <span class="cv-jp"><strong>アトリエ系建築設計事務所</strong>（東京）</span>
@@ -878,7 +1018,7 @@ footer{
 
       <!-- ↓ Teaching（なければ削除） -->
       <div class="cv-block">
-        <div class="cv-head"><span>教育・講演</span><span>Teaching / Lectures</span></div>
+        <div class="cv-head"><span>Teaching / Lectures</span><span>Teaching / Lectures</span></div>
         <div class="cv-row">
           <span class="cv-yr">20XX</span>
           <span class="cv-jp">情報を入力（なければこのブロックを削除）</span>
@@ -891,7 +1031,7 @@ footer{
   <!-- Vision -->
   <div class="vision-wrap">
     <div class="vision-titles">
-      <div class="vtitle-jp">ビジョン</div><!-- ↓ -->
+      <div class="vtitle-jp">Vision</div>
       <div class="vtitle-en">Vision</div>
     </div>
     <div class="vision-body">
@@ -933,7 +1073,7 @@ footer{
   <!-- Awards -->
   <div class="awards-wrap">
     <div class="block-title">
-      <div class="bt-jp">受賞歴・掲載歴</div><!-- ↓ -->
+      <div class="bt-jp">Awards &amp; Publications</div>
       <div class="bt-en">Awards &amp; Publications</div>
     </div>
     <!-- ↓ 行をコピーして追加できます。リンクをつける場合は <a href="URL"> で囲んでください -->
@@ -957,17 +1097,17 @@ footer{
       <span class="aorg">掲載誌 / 学会名</span><!-- ↓ -->
     </a>
 
-  <!-- SNS / LINKS ── 受賞歴の下 -->
+  <!-- SNS / LINKS ── Below Awards -->
   <div class="sns-wrap">
     <div class="block-title">
-      <div class="bt-jp">ブログ・SNS</div><!-- ↓ -->
+      <div class="bt-jp">Blog &amp; Social</div>
       <div class="bt-en">Blog &amp; Social</div>
     </div>
     <!-- ↓ 各リンクのhref=""にURLを入力してください。不要な行は削除可 -->
     <div class="sns-grid">
 
       <a href="https://note.com/YOUR-NOTE-ID" target="_blank" class="sns-card"><!-- ↓ NOTE URL -->
-        <div class="sns-icon sns-note">N</div>
+        <div class="sns-icon sns-note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
         <div class="sns-body">
           <div class="sns-name">Note</div>
           <div class="sns-handle">@アカウント名を入力</div><!-- ↓ -->
@@ -977,7 +1117,7 @@ footer{
       </a>
 
       <a href="https://www.instagram.com/YOUR-HANDLE" target="_blank" class="sns-card"><!-- ↓ Instagram URL -->
-        <div class="sns-icon sns-ig">&#xe600;</div>
+        <div class="sns-icon sns-ig"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div>
         <div class="sns-body">
           <div class="sns-name">Instagram</div>
           <div class="sns-handle">@アカウント名を入力</div><!-- ↓ -->
@@ -987,7 +1127,7 @@ footer{
       </a>
 
       <a href="https://www.facebook.com/YOUR-PAGE" target="_blank" class="sns-card"><!-- ↓ Facebook URL -->
-        <div class="sns-icon sns-fb">f</div>
+        <div class="sns-icon sns-fb"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></div>
         <div class="sns-body">
           <div class="sns-name">Facebook</div>
           <div class="sns-handle">ページ名を入力</div><!-- ↓ -->
@@ -997,7 +1137,7 @@ footer{
       </a>
 
       <a href="https://www.linkedin.com/in/YOUR-ID" target="_blank" class="sns-card"><!-- ↓ LinkedIn URL -->
-        <div class="sns-icon sns-li">in</div>
+        <div class="sns-icon sns-li"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
         <div class="sns-body">
           <div class="sns-name">LinkedIn</div>
           <div class="sns-handle">プロフィール名を入力</div><!-- ↓ -->
@@ -1014,6 +1154,7 @@ footer{
 </section>
 
 
+
 <!-- ══════════════════════════════════════════
   05 CONTACT — Company + Flow + Form
 ══════════════════════════════════════════ -->
@@ -1024,99 +1165,23 @@ footer{
     <div class="sec-title-jp">お問い合わせ</div>
   </div>
 
-  <!-- COMPANY -->
-  <div class="co-wrap">
-    <div class="block-title" style="margin-bottom:28px;">
-      <div class="bt-jp">会社概要</div>
-      <div class="bt-en">Company</div>
-    </div>
-    <div class="co-grid">
-      <div>
-        <table class="co-table">
-          <!-- ↓ 右列を変更してください -->
-          <tr><td>NAME</td><td><span class="co-jp">Studio Yutaka Architects</span><span class="co-en">スタジオ ユタカ アーキテクツ</span></td></tr>
-          <tr><td>FOUNDED</td><td><span class="co-jp">2024年設立</span><span class="co-en">Established 2024</span></td></tr>
-          <tr><td>PRINCIPAL</td><td><span class="co-jp">齋藤 裕</span><span class="co-en">Yutaka Saito</span></td></tr>
-          <tr><td>STAFF</td><td><span class="co-jp">人数を入力</span><span class="co-en">Enter number</span></td></tr>
-          <tr><td>LICENSE</td><td><span class="co-jp">一級建築士事務所 ○○県知事登録 第XXXXX号</span></td></tr>
-          <tr><td>ADDRESS</td><td><span class="co-jp">住所を入力</span><span class="co-en">Enter address</span></td></tr>
-          <tr><td>TEL</td><td><span class="co-jp">電話番号を入力</span></td></tr>
-          <tr><td>MAIL</td><td><span class="co-jp"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5d2432282f1d38303c3431733e3230">[email&#160;protected]</a></span></td></tr>
-          <tr><td>SNS</td><td><span class="co-jp">@アカウント名</span><span class="co-en">@handle</span></td></tr>
-        </table>
-      </div>
-      <div>
-        <!-- ↓ <img src="map.jpg" alt=""> に置き換え -->
-        <div class="ph co-map-ph">地図または外観写真を挿入<br>Insert map or exterior</div>
-        <div class="co-addr-jp">〒XXX-XXXX 住所を入力<br>最寄り駅 徒歩XX分</div><!-- ↓ -->
-        <div class="co-addr-en">Address line 1, Nearest station, X min walk</div><!-- ↓ -->
-      </div>
-    </div>
-  </div>
-
-  <!-- MAIL FORM -->
-  <div class="form-wrap">
-    <div class="block-title" style="margin-bottom:28px;">
-      <div class="bt-jp">お問い合わせフォーム</div>
-      <div class="bt-en">Enquiry Form</div>
-    </div>
-    <div class="form-grid">
-      <div class="form-left">
-        <p class="flead-jp">設計のご依頼・ご相談・メディア掲載など、お気軽にご連絡ください。通常3営業日以内にご返信いたします。</p>
-        <p class="flead-en">For project enquiries, collaborations, or media. We respond within 3 business days.</p>
-      </div>
-      <div class="form-right">
-        <!-- ↓ action属性にFormspreeのURLを入力（例: https://formspree.io/f/XXXXXXXX） -->
-        <form action="#" method="POST">
-          <div class="form-field">
-            <label>お名前 <span class="en">NAME</span></label>
-            <input type="text" name="name" placeholder="例: 齋藤 裕" required>
-          </div>
-          <div class="form-field">
-            <label>メールアドレス <span class="en">EMAIL</span></label>
-            <input type="email" name="email" placeholder="your@email.com" required>
-          </div>
-          <div class="form-field">
-            <label>お問い合わせ種別 <span class="en">TYPE</span></label>
-            <select name="type">
-              <option value="">選択してください / Select</option>
-              <option value="project">設計依頼 / Project Enquiry</option>
-              <option value="collaboration">コラボレーション / Collaboration</option>
-              <option value="media">メディア掲載 / Media</option>
-              <option value="other">その他 / Other</option>
-            </select>
-          </div>
-          <div class="form-field">
-            <label>メッセージ <span class="en">MESSAGE</span></label>
-            <textarea name="message" placeholder="ご依頼の概要をお聞かせください..." required></textarea>
-          </div>
-          <button type="submit" class="form-submit">送信する / Send</button>
-          <p class="form-note">送信いただいた情報は設計業務の対応のみに使用します。<br>Your information will only be used to respond to your enquiry.</p>
-        </form>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- FLOW -->
+  <!-- FLOW — 設計フロー -->
   <div class="flow-wrap">
     <div class="block-title" style="margin-bottom:28px;">
-      <div class="bt-jp">設計フロー</div>
-      <div class="bt-en">Flow</div>
+      <div class="bt-jp">Flow</div>
+      <div class="bt-en">Design Process</div>
     </div>
-    <!-- ↓ リード文を変更 -->
     <p style="font-family:var(--jp);font-size:13px;color:var(--mid);margin-bottom:32px;line-height:2;">初回のヒアリングから竣工まで、私たちの設計プロセスをご紹介します。</p>
-    <div class="flow-grid">
+    <div class="flow-grid" style="grid-template-columns:repeat(6,1fr);">
 
       <div class="flow-step">
-        <!-- ↓ <img src="flow1.jpg" alt=""> に置き換え -->
         <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
         <div class="flow-body">
           <div class="flow-num">01</div>
-          <div class="ftitle-jp">ヒアリング</div><!-- ↓ -->
-          <div class="ftitle-en">Listening</div><!-- ↓ -->
-          <p class="fdesc-jp">クライアントの言葉の奥にある本当の願いを聴き取ることから始まります。</p><!-- ↓ -->
-          <p class="fdesc-en">Listening to what the client truly wants.</p><!-- ↓ -->
+          <div class="ftitle-jp">ヒアリング</div>
+          <div class="ftitle-en">Listening</div>
+          <p class="fdesc-jp">クライアントの言葉の奥にある本当の願いを聴き取ることから始まります。</p>
+          <p class="fdesc-en">Listening to what the client truly wants.</p>
         </div>
       </div>
 
@@ -1164,8 +1229,95 @@ footer{
         </div>
       </div>
 
+      <!-- ↓ 06 アフターフォロー -->
+      <div class="flow-step">
+        <div class="flow-photo"><div class="ph">写真を挿入<br>Insert photo</div></div>
+        <div class="flow-body">
+          <div class="flow-num">06</div>
+          <div class="ftitle-jp">アフターフォロー</div><!-- ↓ -->
+          <div class="ftitle-en">After Care</div><!-- ↓ -->
+          <p class="fdesc-jp">竣工後も定期的に訪問し、建物の状態を確認・サポートします。</p><!-- ↓ -->
+          <p class="fdesc-en">We visit regularly after completion to support the building over time.</p><!-- ↓ -->
+        </div>
+      </div>
+
     </div>
   </div>
+
+
+  <!-- COMPANY -->
+  <div class="co-wrap">
+    <div class="block-title" style="margin-bottom:28px;">
+      <div class="bt-jp">Company</div>
+      <div class="bt-en">Company</div>
+    </div>
+    <div class="co-grid">
+      <div>
+        <table class="co-table">
+          <!-- ↓ 右列を変更してください -->
+          <tr><td>NAME</td><td><span class="co-jp">Studio Yutaka Architects</span><span class="co-en">スタジオ ユタカ アーキテクツ</span></td></tr>
+          <tr><td>FOUNDED</td><td><span class="co-jp">2024年設立</span><span class="co-en">Established 2024</span></td></tr>
+          <tr><td>PRINCIPAL</td><td><span class="co-jp">齋藤 裕</span><span class="co-en">Yutaka Saito</span></td></tr>
+          <tr><td>STAFF</td><td><span class="co-jp">人数を入力</span><span class="co-en">Enter number</span></td></tr>
+          <tr><td>LICENSE</td><td><span class="co-jp">一級建築士事務所 ○○県知事登録 第XXXXX号</span></td></tr>
+          <tr><td>ADDRESS</td><td><span class="co-jp">住所を入力</span><span class="co-en">Enter address</span></td></tr>
+          <tr><td>TEL</td><td><span class="co-jp">電話番号を入力</span></td></tr>
+          <tr><td>MAIL</td><td><span class="co-jp"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5d2432282f1d38303c3431733e3230">[email&#160;protected]</a></span></td></tr>
+          <tr><td>SNS</td><td><span class="co-jp">@アカウント名</span><span class="co-en">@handle</span></td></tr>
+        </table>
+      </div>
+      <div>
+        <!-- ↓ <img src="map.jpg" alt=""> に置き換え -->
+        <div class="ph co-map-ph">地図または外観写真を挿入<br>Insert map or exterior</div>
+        <div class="co-addr-jp">〒XXX-XXXX 住所を入力<br>最寄り駅 徒歩XX分</div><!-- ↓ -->
+        <div class="co-addr-en">Address line 1, Nearest station, X min walk</div><!-- ↓ -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIL FORM -->
+  <div class="form-wrap">
+    <div class="block-title" style="margin-bottom:28px;">
+      <div class="bt-jp">Contact Form</div>
+      <div class="bt-en">Contact Form</div>
+    </div>
+    <div class="form-grid">
+      <div class="form-left">
+        <p class="flead-jp">設計のご依頼・ご相談・メディア掲載など、お気軽にご連絡ください。通常3営業日以内にご返信いたします。</p>
+        <p class="flead-en">For project enquiries, collaborations, or media. We respond within 3 business days.</p>
+      </div>
+      <div class="form-right">
+        <!-- ↓ action属性にFormspreeのURLを入力（例: https://formspree.io/f/XXXXXXXX） -->
+        <form action="#" method="POST">
+          <div class="form-field">
+            <label>お名前 <span class="en">NAME</span></label>
+            <input type="text" name="name" placeholder="例: 齋藤 裕" required>
+          </div>
+          <div class="form-field">
+            <label>メールアドレス <span class="en">EMAIL</span></label>
+            <input type="email" name="email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-field">
+            <label>お問い合わせ種別 <span class="en">TYPE</span></label>
+            <select name="type">
+              <option value="">選択してください / Select</option>
+              <option value="project">設計依頼 / Project Enquiry</option>
+              <option value="collaboration">コラボレーション / Collaboration</option>
+              <option value="media">メディア掲載 / Media</option>
+              <option value="other">その他 / Other</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>メッセージ <span class="en">MESSAGE</span></label>
+            <textarea name="message" placeholder="ご依頼の概要をお聞かせください..." required></textarea>
+          </div>
+          <button type="submit" class="form-submit">送信する / Send</button>
+          <p class="form-note">送信いただいた情報は設計業務の対応のみに使用します。<br>Your information will only be used to respond to your enquiry.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+
 
 </section>
 
@@ -1217,22 +1369,7 @@ const obs = new IntersectionObserver(entries=>{
 },{threshold:0,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-/* modal */
-function openModal(d){
-  document.getElementById('m-type').textContent  = d.type||'';
-  document.getElementById('m-name-jp').textContent= d.nameJp||'';
-  document.getElementById('m-name-en').textContent= d.nameEn||'';
-  document.getElementById('m-desc-jp').textContent= d.descJp||'';
-  document.getElementById('m-desc-en').textContent= d.descEn||'';
-  document.getElementById('m-meta').innerHTML=`
-    <div class="modal-meta-item"><label>YEAR</label><span>${d.year||''}</span></div>
-    <div class="modal-meta-item"><label>LOCATION</label><span>${d.loc||''}</span></div>
-    <div class="modal-meta-item"><label>AREA</label><span>${d.area||''}</span></div>
-    <div class="modal-meta-item"><label>TYPE</label><span>${d.type||''}</span></div>
-  `;
-  document.getElementById('modal').classList.add('open');
-  document.body.style.overflow='hidden';
-}
+/* openModal → see multi-slide version below */
 function closeModal(){
   document.getElementById('modal').classList.remove('open');
   document.body.style.overflow='';
@@ -1242,18 +1379,160 @@ function handleModalClick(e){
 }
 document.getElementById('modal-x').addEventListener('click',closeModal);
 
-/* custom cursor */
+/* ── CURSOR ── */
 (function(){
-  const cur=document.getElementById('cur');
-  let mx=0,my=0;
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    cur.style.left=mx+'px';
-    cur.style.top=my+'px';
+  const cur  = document.getElementById('cur');
+  const prev = document.getElementById('cur-preview');
+  if(!cur) return;
+
+  let mx = -200, my = -200;
+  let visible = false;
+
+  function moveCursor(e){
+    mx = e.clientX;
+    my = e.clientY;
+    if(!visible){
+      cur.style.display = 'block';
+      visible = true;
+    }
+    // position the wrapper exactly at cursor
+    cur.style.left = mx + 'px';
+    cur.style.top  = my + 'px';
+    // preview follows with offset
+    if(prev){
+      prev.style.left = (mx + 20) + 'px';
+      prev.style.top  = my + 'px';
+      prev.style.transform = 'translateY(-50%)';
+    }
+  }
+
+  document.addEventListener('mousemove', moveCursor, {passive:true});
+
+  // enlarge on interactive elements
+  document.addEventListener('mouseover', e=>{
+    const t = e.target.closest('a,button,[onclick],.prod-card,.news-row,.form-submit,.prod-arrow');
+    document.body.classList.toggle('cur-big', !!t);
   });
-  const hov='a,button,.work-item,.prod-card,.news-row,.modal-x,.form-submit,.nav-link,.nav-logo';
-  document.querySelectorAll(hov).forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));
+
+  // work item preview
+  document.querySelectorAll('.work-item').forEach(el=>{
+    el.addEventListener('mouseenter', ()=>{
+      const src = el.getAttribute('data-preview')||'';
+      if(!prev) return;
+      if(src.trim()){
+        prev.innerHTML = '<img src="'+src+'" alt="preview">';
+      } else {
+        prev.innerHTML = '<div class="ph" style="height:100%;font-size:9px;letter-spacing:.08em;color:#bbb;">DIAGRAM / SUB IMAGE</div>';
+      }
+      document.body.classList.add('work-preview');
+    });
+    el.addEventListener('mouseleave', ()=>{
+      document.body.classList.remove('work-preview');
+    });
   });
+})();
+
+/* ── MULTI-SLIDE MODAL ── */
+function openModal(d){
+  document.getElementById('m-type').textContent   = d.type||'';
+  document.getElementById('m-name-jp').textContent= d.nameJp||'';
+  document.getElementById('m-name-en').textContent= d.nameEn||'';
+  document.getElementById('m-desc-jp').textContent= d.descJp||'';
+  document.getElementById('m-desc-en').textContent= d.descEn||'';
+  document.getElementById('m-meta').innerHTML = `
+    <div class="modal-meta-item"><label>YEAR</label><span>${d.year||''}</span></div>
+    <div class="modal-meta-item"><label>LOCATION</label><span>${d.loc||''}</span></div>
+    <div class="modal-meta-item"><label>AREA</label><span>${d.area||''}</span></div>
+    <div class="modal-meta-item"><label>TYPE</label><span>${d.type||''}</span></div>
+  `;
+  // extra text
+  const extra = document.getElementById('m-extra');
+  extra.innerHTML = d.extra ? `<p>${d.extra}</p>` : '';
+
+  // slides
+  const slides = document.getElementById('modal-slides');
+  const nav    = document.getElementById('modal-nav');
+  slides.innerHTML = '';
+  nav.innerHTML = '';
+  const imgs = (d.images && d.images.length) ? d.images : [''];
+  imgs.forEach((src, i)=>{
+    const slide = document.createElement('div');
+    slide.className = 'modal-slide' + (i===0?' active':'');
+    if(src && src.trim()){
+      const img = document.createElement('img');
+      img.src = src; img.alt = '';
+      slide.appendChild(img);
+    } else {
+      slide.innerHTML = '<div class="ph" style="height:100%;min-height:320px;">' +
+        (i===0 ? '写真を挿入 / Main photo' : 'サブ写真 '+(i+1)+' / Sub photo '+(i+1)) + '</div>';
+    }
+    slides.appendChild(slide);
+    if(imgs.length > 1){
+      const btn = document.createElement('button');
+      btn.textContent = String(i+1).padStart(2,'0');
+      if(i===0) btn.classList.add('active');
+      btn.onclick = ()=>{
+        slides.querySelectorAll('.modal-slide').forEach((s,j)=>s.classList.toggle('active',j===i));
+        nav.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('active',j===i));
+      };
+      nav.appendChild(btn);
+    }
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+/* ── PRODUCTS CAROUSEL ── */
+(function(){
+  const track = document.getElementById('prod-track');
+  const prevB = document.getElementById('prod-prev');
+  const nextB = document.getElementById('prod-next');
+  const dotsW = document.getElementById('prod-dots');
+  if(!track) return;
+
+  const cards = Array.from(track.querySelectorAll('.prod-card'));
+  const total = cards.length;
+  const visible = 3;
+  const pages = Math.max(1, total - visible + 1);
+  let page = 0;
+
+  /* build dots */
+  const maxDots = Math.ceil(total / visible);
+  for(let i=0;i<maxDots;i++){
+    const d = document.createElement('button');
+    d.className = 'prod-dot' + (i===0?' active':'');
+    d.setAttribute('aria-label','Page '+(i+1));
+    d.addEventListener('click',()=>goTo(i * visible));
+    dotsW.appendChild(d);
+  }
+
+  function goTo(p){
+    page = Math.max(0, Math.min(p, pages-1));
+    /* calc card width including gap */
+    const gap = 32;
+    const cardW = cards[0].getBoundingClientRect().width + gap;
+    track.style.transform = 'translateX(-' + (page * cardW) + 'px)';
+    /* update dots */
+    const dotPage = Math.floor(page / visible);
+    dotsW.querySelectorAll('.prod-dot').forEach((d,i)=>d.classList.toggle('active',i===dotPage));
+  }
+
+  if(prevB) prevB.addEventListener('click',()=>goTo(page-1));
+  if(nextB) nextB.addEventListener('click',()=>goTo(page+1));
+
+  /* edge-zone hover: hold cursor on edge to auto-advance */
+  const wrap = document.getElementById('prod-carousel');
+  let edgeTimer;
+  if(wrap){
+    wrap.addEventListener('mousemove', e=>{
+      const r = wrap.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const zone = 100;
+      clearTimeout(edgeTimer);
+      if(x < zone)               edgeTimer = setTimeout(()=>goTo(page-1), 500);
+      else if(x > r.width-zone)  edgeTimer = setTimeout(()=>goTo(page+1), 500);
+    });
+    wrap.addEventListener('mouseleave',()=>clearTimeout(edgeTimer));
+  }
 })();
