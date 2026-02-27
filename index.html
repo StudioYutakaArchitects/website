@@ -91,63 +91,7 @@ nav{
 .nav-link:hover{color:var(--black);}
 
 
-/* ══════════════════════════════
-   CUSTOM CURSOR
-══════════════════════════════ */
-html, body { cursor: none; }
-a, button, [onclick], .work-item, .prod-card, .news-row,
-.nav-link, .nav-logo, .form-submit, .modal-nav button,
-input, select, textarea { cursor: none; }
 
-#cur {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  top: 0; left: 0;
-  /* Positioned directly by JS — no transform offset */
-  display: block;
-}
-/* outer ring */
-#cur-ring {
-  position: absolute;
-  width: 28px; height: 28px;
-  border: 1.5px solid var(--green);
-  border-radius: 50%;
-  /* centered around origin */
-  transform: translate(-50%, -50%);
-  transition: width .2s, height .2s;
-}
-/* crosshair arms */
-#cur-ring::before, #cur-ring::after {
-  content: ''; position: absolute; background: var(--green);
-}
-#cur-ring::before { width: 1px; height: 9px; left: 50%; top: -10px; transform: translateX(-50%); }
-#cur-ring::after  { width: 9px; height: 1px; top: 50%;  left: -10px; transform: translateY(-50%); }
-/* center dot */
-#cur-dot-inner {
-  position: absolute;
-  width: 4px; height: 4px;
-  background: var(--green);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-body.cur-big #cur-ring { width: 44px; height: 44px; opacity: .65; }
-
-/* floating preview image on WORKS hover */
-#cur-preview {
-  position: fixed;
-  width: 240px; aspect-ratio: 4/3;
-  pointer-events: none;
-  z-index: 99998;
-  opacity: 0;
-  transition: opacity .18s;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: var(--light);
-  top: 0; left: 0;
-}
-#cur-preview img, #cur-preview .ph { width:100%; height:100%; object-fit:cover; }
-body.work-preview #cur-preview { opacity: 1; }
 
 /* ══════════════════════════════
    MODAL
@@ -172,7 +116,7 @@ body.work-preview #cur-preview { opacity: 1; }
 .modal-nav{display:flex;gap:6px;padding:12px 16px;border-top:1px solid var(--border);}
 .modal-nav button{
   width:28px;height:28px;border:1px solid var(--border);background:var(--white);
-  font-family:var(--mono);font-size:10px;cursor:none;
+  font-family:var(--mono);font-size:10px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:background .15s;
 }
@@ -234,7 +178,7 @@ body.work-preview #cur-preview { opacity: 1; }
   display:grid;
   grid-template-columns:32px 60% 1fr; /* 左余白 | 写真60% | テキスト残り */
   align-items:stretch;
-  cursor:none;
+  cursor:pointer;
   width:100%;
   border-top:1px solid var(--border);
 }
@@ -544,7 +488,7 @@ body.work-preview #cur-preview { opacity: 1; }
   color:var(--black);
   font-family:var(--mono);font-size:20px;
   opacity:0;transition:opacity .2s;
-  cursor:none;
+  cursor:pointer;
 }
 .prod-arrow-left{left:0;background:linear-gradient(to right,rgba(246,245,243,.9) 0%,transparent 100%);}
 .prod-arrow-right{right:0;background:linear-gradient(to left,rgba(246,245,243,.9) 0%,transparent 100%);}
@@ -552,7 +496,7 @@ body.work-preview #cur-preview { opacity: 1; }
 .prod-dots{display:flex;justify-content:center;gap:6px;margin-top:20px;}
 .prod-dot{
   width:6px;height:6px;border-radius:50%;background:var(--border);
-  border:none;cursor:none;padding:0;
+  border:none;cursor:pointer;padding:0;
   transition:background .2s;
 }
 .prod-dot.active{background:var(--black);}
@@ -616,9 +560,6 @@ footer{
 </head>
 <body>
 
-<!-- ══ CUSTOM CURSOR ══ -->
-<div id="cur"><div id="cur-ring"></div><div id="cur-dot-inner"></div></div>
-<div id="cur-preview"><div class="ph" style="font-size:9px;letter-spacing:.08em;">DIAGRAM / SUB IMAGE</div></div>
 
 <!-- ══════ MODAL ══════ -->
 <div class="modal-bg" id="modal" onclick="handleModalClick(event)">
@@ -838,9 +779,7 @@ footer{
       </div>
     </div>
 
-      </div><!-- close prod-card 3 -->
-
-      <!-- ↓ CARD 4 — カーソルを右に寄せると表示されます -->
+      <!-- ↓ CARD 4 -->
       <div class="prod-card">
         <div class="prod-img"><div class="ph">写真を挿入 / Insert photo</div></div>
         <div class="prod-body">
@@ -1379,58 +1318,7 @@ function handleModalClick(e){
 }
 document.getElementById('modal-x').addEventListener('click',closeModal);
 
-/* ── CURSOR ── */
-(function(){
-  const cur  = document.getElementById('cur');
-  const prev = document.getElementById('cur-preview');
-  if(!cur) return;
 
-  let mx = -200, my = -200;
-  let visible = false;
-
-  function moveCursor(e){
-    mx = e.clientX;
-    my = e.clientY;
-    if(!visible){
-      cur.style.display = 'block';
-      visible = true;
-    }
-    // position the wrapper exactly at cursor
-    cur.style.left = mx + 'px';
-    cur.style.top  = my + 'px';
-    // preview follows with offset
-    if(prev){
-      prev.style.left = (mx + 20) + 'px';
-      prev.style.top  = my + 'px';
-      prev.style.transform = 'translateY(-50%)';
-    }
-  }
-
-  document.addEventListener('mousemove', moveCursor, {passive:true});
-
-  // enlarge on interactive elements
-  document.addEventListener('mouseover', e=>{
-    const t = e.target.closest('a,button,[onclick],.prod-card,.news-row,.form-submit,.prod-arrow');
-    document.body.classList.toggle('cur-big', !!t);
-  });
-
-  // work item preview
-  document.querySelectorAll('.work-item').forEach(el=>{
-    el.addEventListener('mouseenter', ()=>{
-      const src = el.getAttribute('data-preview')||'';
-      if(!prev) return;
-      if(src.trim()){
-        prev.innerHTML = '<img src="'+src+'" alt="preview">';
-      } else {
-        prev.innerHTML = '<div class="ph" style="height:100%;font-size:9px;letter-spacing:.08em;color:#bbb;">DIAGRAM / SUB IMAGE</div>';
-      }
-      document.body.classList.add('work-preview');
-    });
-    el.addEventListener('mouseleave', ()=>{
-      document.body.classList.remove('work-preview');
-    });
-  });
-})();
 
 /* ── MULTI-SLIDE MODAL ── */
 function openModal(d){
@@ -1521,18 +1409,5 @@ function openModal(d){
   if(prevB) prevB.addEventListener('click',()=>goTo(page-1));
   if(nextB) nextB.addEventListener('click',()=>goTo(page+1));
 
-  /* edge-zone hover: hold cursor on edge to auto-advance */
-  const wrap = document.getElementById('prod-carousel');
-  let edgeTimer;
-  if(wrap){
-    wrap.addEventListener('mousemove', e=>{
-      const r = wrap.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const zone = 100;
-      clearTimeout(edgeTimer);
-      if(x < zone)               edgeTimer = setTimeout(()=>goTo(page-1), 500);
-      else if(x > r.width-zone)  edgeTimer = setTimeout(()=>goTo(page+1), 500);
-    });
-    wrap.addEventListener('mouseleave',()=>clearTimeout(edgeTimer));
-  }
+
 })();
